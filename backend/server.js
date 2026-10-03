@@ -1172,4 +1172,19 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+
+  // Auto keep-alive ping to prevent sleep on free hosting (Render / Railway)
+  const hostUrl = process.env.RENDER_EXTERNAL_URL || process.env.BACKEND_URL;
+  if (hostUrl) {
+    const PING_INTERVAL = 12 * 60 * 1000; // Ping every 12 minutes (before the 15-min timeout)
+    setInterval(async () => {
+      try {
+        const pingUrl = `${hostUrl.replace(/\/$/, "")}/health`;
+        const res = await fetch(pingUrl);
+        console.log(`[KeepAlive] Pinged ${pingUrl} - Status: ${res.status}`);
+      } catch (err) {
+        console.warn(`[KeepAlive] Ping error:`, err.message);
+      }
+    }, PING_INTERVAL);
+  }
 });
