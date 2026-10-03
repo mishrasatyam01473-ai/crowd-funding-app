@@ -52,7 +52,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.status(200).json({
     status: "ok",
-    message: "Crowdfunding API server is running smoothly.",
+    message: "Crowdfunding API running",
   });
 });
 
