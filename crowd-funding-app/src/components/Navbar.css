@@ -1,0 +1,447 @@
+/* =========================================================
+   RESPONSIVE NAVBAR
+   ========================================================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(17, 22, 29, 0.88);
+
+  color: #ffffff;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   NAVBAR CONTAINER
+   ========================================================= */
+
+.navbar-container {
+  display: flex;
+
+  width: min(1240px, 100%);
+
+  min-height: 70px;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin: 0 auto;
+
+  padding: 0 24px;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.navbar-brand {
+  flex: 0 0 auto;
+}
+
+
+/* Logo Button */
+
+.brand-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 1.45rem;
+
+  font-weight: 850;
+
+  letter-spacing: -0.03em;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* Logo blue dot */
+
+.brand-button::before {
+  content: "";
+
+  width: 9px;
+  height: 9px;
+
+  margin-right: 9px;
+
+  border-radius: 50%;
+
+  background: #1687ff;
+
+  box-shadow:
+    0 0 14px rgba(22, 135, 255, 0.7);
+}
+
+
+/* Logo Hover */
+
+.brand-button:hover {
+  color: #ffffff;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   NAVIGATION MENU
+   ========================================================= */
+
+.navbar-menu {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  margin: 0;
+
+  padding: 0;
+
+  list-style: none;
+}
+
+
+/* =========================================================
+   NAVIGATION BUTTONS
+   ========================================================= */
+
+.nav-link {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+
+  padding: 8px 13px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #b9c2cf;
+
+  text-decoration: none;
+
+  font-family: inherit;
+
+  font-size: 0.94rem;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* Navigation Button Hover */
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+
+  color: #ffffff;
+
+  outline: none;
+
+  transform: translateY(-1px);
+}
+
+
+/* Navigation Button Active */
+
+.nav-link:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   USER LOGIN SECTION
+   ========================================================= */
+
+.navbar-actions {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+/* =========================================================
+   USER LOGIN BUTTON
+   ========================================================= */
+
+.btn-user {
+  display: inline-flex;
+
+  min-height: 42px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 8px 16px;
+
+  border: 1px solid rgba(255, 71, 87, 0.65);
+
+  border-radius: 9px;
+
+  background: rgba(255, 71, 87, 0.06);
+
+  color: #ff7d89;
+
+  font-family: inherit;
+
+  font-size: 0.88rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  transition: all 0.2s ease;
+}
+
+
+/* User Login Hover */
+
+.btn-user:hover,
+.btn-user:focus-visible {
+  border-color: #ff4757;
+
+  background: #ff4757;
+
+  color: #ffffff;
+
+  outline: none;
+
+  transform: translateY(-1px);
+}
+
+
+/* User Login Active */
+
+.btn-user:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .navbar-container {
+    gap: 12px;
+
+    padding-inline: 18px;
+  }
+
+
+  .navbar-menu {
+    gap: 2px;
+  }
+
+
+  .nav-link {
+    padding-inline: 9px;
+
+    font-size: 0.86rem;
+  }
+
+
+  .btn-user {
+    padding-inline: 12px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 680px) {
+
+  .navbar-container {
+    min-height: 64px;
+
+    gap: 10px;
+
+    padding: 0 12px;
+  }
+
+
+  /* Smaller Logo */
+
+  .brand-button {
+    font-size: 1.18rem;
+  }
+
+
+  .brand-button::before {
+    width: 7px;
+
+    height: 7px;
+
+    margin-right: 7px;
+  }
+
+
+  /*
+     Navigation becomes horizontally scrollable.
+     This avoids the menu breaking on small screens.
+  */
+
+  .navbar-menu {
+    flex: 1 1 auto;
+
+    justify-content: flex-start;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  .navbar-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .nav-link {
+    min-height: 38px;
+
+    padding: 7px 9px;
+
+    font-size: 0.78rem;
+
+    white-space: nowrap;
+  }
+
+
+  .btn-user {
+    min-height: 38px;
+
+    padding: 7px 10px;
+
+    font-size: 0.76rem;
+
+    white-space: nowrap;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .navbar-container {
+    gap: 7px;
+
+    padding-inline: 9px;
+  }
+
+
+  .brand-button {
+    font-size: 1rem;
+  }
+
+
+  .brand-button::before {
+    display: none;
+  }
+
+
+  .nav-link {
+    padding-inline: 7px;
+
+    font-size: 0.74rem;
+  }
+
+
+  .btn-user {
+    padding-inline: 8px;
+
+    font-size: 0.72rem;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nav-link,
+  .btn-user,
+  .brand-button {
+    transition: none;
+  }
+}

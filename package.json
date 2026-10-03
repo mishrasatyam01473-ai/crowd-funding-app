@@ -1,0 +1,11 @@
+{
+  "name": "crowd-funding-fullstack",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:backend": "npm start --prefix backend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix crowd-funding-app",
+    "build:frontend": "npm run build --prefix crowd-funding-app"
+  }
+}
