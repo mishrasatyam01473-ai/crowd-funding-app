@@ -1,7 +1,3 @@
-/* =====================================================
-   QUERY FORM STYLING - MODERN & RESPONSIVE
-   ===================================================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .query-page {
@@ -23,7 +19,6 @@
   overflow-x: hidden;
 }
 
-/* Ambient glow orbs */
 .query-bg-glow {
   position: absolute;
   pointer-events: none;
@@ -48,7 +43,6 @@
   background: rgba(99, 102, 241, 0.08);
 }
 
-/* Container */
 .query-container {
   position: relative;
   z-index: 1;
@@ -59,7 +53,7 @@
   flex-direction: column;
 }
 
-/* Top Navigation Bar */
+/* Nav & Breadcrumbs */
 .query-nav-bar {
   display: flex;
   align-items: center;
@@ -117,7 +111,7 @@
   font-weight: 500;
 }
 
-/* Page Header */
+/* Header */
 .query-header {
   text-align: center;
   margin-bottom: 38px;
@@ -149,14 +143,8 @@
 }
 
 @keyframes pulse-dot {
-  0%, 100% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 1;
-  }
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
 }
 
 .query-page-title {
@@ -176,7 +164,7 @@
   line-height: 1.6;
 }
 
-/* Main Grid Layout */
+/* Grid Layout */
 .query-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
@@ -184,9 +172,7 @@
   align-items: start;
 }
 
-/* =====================================================
-   LEFT COLUMN: SIDEBAR INFO
-   ===================================================== */
+/* Sidebar */
 .query-info-sidebar {
   display: flex;
   flex-direction: column;
@@ -289,9 +275,7 @@
   color: #64748b;
 }
 
-/* =====================================================
-   RIGHT COLUMN: QUERY FORM CARD
-   ===================================================== */
+/* Query Form Card */
 .query-form-card {
   background: linear-gradient(180deg, #161e29 0%, #111721 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -336,7 +320,6 @@
   white-space: nowrap;
 }
 
-/* Error Banner */
 .form-error-banner {
   display: flex;
   align-items: center;
@@ -355,7 +338,6 @@
   color: #f87171;
 }
 
-/* Form Layout Rows */
 .query-form {
   display: flex;
   flex-direction: column;
@@ -394,7 +376,6 @@
   margin-left: 4px;
 }
 
-/* Input Fields */
 .field-input-box {
   position: relative;
   display: flex;
@@ -490,7 +471,6 @@
   line-height: 1.4;
 }
 
-/* Quick Category Selection */
 .quick-category-section {
   display: flex;
   flex-direction: column;
@@ -538,7 +518,6 @@
   box-shadow: 0 2px 10px rgba(22, 135, 255, 0.35);
 }
 
-/* Action Buttons */
 .query-form-actions {
   display: flex;
   align-items: center;
@@ -606,12 +585,7 @@
   box-shadow: none !important;
 }
 
-.btn-content {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
+.btn-content,
 .btn-loading-state {
   display: inline-flex;
   align-items: center;
@@ -628,14 +602,10 @@
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-/* =====================================================
-   SUCCESS PANEL
-   ===================================================== */
+/* Success Panel */
 .query-success-panel {
   text-align: center;
   padding: 40px 20px;
@@ -660,14 +630,8 @@
 }
 
 @keyframes popIn {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .success-heading {
@@ -757,9 +721,6 @@
   color: #ffffff;
 }
 
-/* =====================================================
-   RESPONSIVE MEDIA QUERIES
-   ===================================================== */
 @media (max-width: 960px) {
   .query-grid {
     grid-template-columns: 1fr;
@@ -825,7 +786,6 @@
   }
 }
 
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .badge-pulse-indicator,
   .spinner-dot,

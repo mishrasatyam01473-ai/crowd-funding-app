@@ -19,7 +19,6 @@ const CreateProgramme = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -28,38 +27,24 @@ const CreateProgramme = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setMessage("");
     setError("");
 
-    console.log("Data being sent to server:", formData);
-
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/campaignRegistration`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/campaignRegistration`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
-
-      console.log("Response from server:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to create campaign");
       }
 
-      setMessage(
-        "Campaign created successfully! Your campaign will be active within 12 hours."
-      );
-
-      // Clear form
+      setMessage("Campaign created successfully! Your campaign will be active within 12 hours.");
       setFormData({
         title: "",
         description: "",
@@ -69,9 +54,9 @@ const CreateProgramme = () => {
         creator: "",
         image: "",
       });
-    } catch (error) {
-      console.error("Frontend error:", error);
-      setError(error.message);
+    } catch (err) {
+      console.error("Create campaign error:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -80,31 +65,15 @@ const CreateProgramme = () => {
   return (
     <div className="create-campaign-page">
       <div className="create-campaign-card">
-
         <h1>Create a Campaign</h1>
+        <p className="subtitle">Start your crowdfunding campaign</p>
 
-        <p className="subtitle">
-          Start your crowdfunding campaign
-        </p>
-
-        {message && (
-          <div className="success-message">
-            {message}
-          </div>
-        )}
-
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+        {message && <div className="success-message">{message}</div>}
+        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-
-          {/* TITLE */}
           <div className="form-group">
             <label>Campaign Title</label>
-
             <input
               type="text"
               name="title"
@@ -115,10 +84,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* DESCRIPTION */}
           <div className="form-group">
             <label>Description</label>
-
             <textarea
               name="description"
               value={formData.description}
@@ -129,10 +96,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* EMAIL */}
           <div className="form-group">
             <label>Enter Email</label>
-
             <input
               type="email"
               name="mailid"
@@ -143,10 +108,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* PASSCODE */}
           <div className="form-group">
             <label>Login Passcode</label>
-
             <input
               type="password"
               name="passcode"
@@ -157,10 +120,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* GOAL */}
           <div className="form-group">
             <label>Funding Goal</label>
-
             <input
               type="number"
               name="goal"
@@ -172,10 +133,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* CREATOR */}
           <div className="form-group">
             <label>Creator Name</label>
-
             <input
               type="text"
               name="creator"
@@ -186,10 +145,8 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* IMAGE URL */}
           <div className="form-group">
             <label>Image URL</label>
-
             <input
               type="text"
               name="image"
@@ -199,15 +156,9 @@ const CreateProgramme = () => {
             />
           </div>
 
-          {/* SUBMIT */}
-          <button
-            type="submit"
-            className="create-button"
-            disabled={loading}
-          >
+          <button type="submit" className="create-button" disabled={loading}>
             {loading ? "Creating..." : "Create Programme"}
           </button>
-
         </form>
       </div>
     </div>

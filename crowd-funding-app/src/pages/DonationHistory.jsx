@@ -6,17 +6,13 @@ import "./DonationHistory.css";
 
 const DonationHistory = () => {
   const navigate = useNavigate();
-
-  // Load user synchronously from active session
   const [currentUser] = useState(() => getAuthUser());
-
   const [donations, setDonations] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch donation history for the authenticated user only
   const fetchDonations = async (emailToQuery) => {
     const targetEmail = (emailToQuery || currentUser?.mailid || "").trim().toLowerCase();
     if (!targetEmail) {
@@ -63,7 +59,6 @@ const DonationHistory = () => {
     }
   }, [currentUser, navigate]);
 
-  // Filter donations by search query (campaign name, creator, donation ID)
   const filteredDonations = donations.filter((d) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
@@ -75,30 +70,22 @@ const DonationHistory = () => {
     );
   });
 
-  // Calculate unique campaigns supported
   const uniqueCampaignsCount = new Set(
     donations.map((d) => d.campaignName || d.campaignId).filter(Boolean)
   ).size;
 
-  // If not logged in, redirect immediately to login
   if (!currentUser) {
     return <Navigate to="/user-login" replace state={{ from: "/donation-history" }} />;
   }
 
   return (
     <div className="history-page">
-      {/* Background ambient lighting */}
       <div className="history-bg-glow glow-1" aria-hidden="true" />
       <div className="history-bg-glow glow-2" aria-hidden="true" />
 
       <div className="history-container">
-        {/* Navigation Breadcrumb */}
         <div className="history-breadcrumb-bar">
-          <button
-            type="button"
-            className="history-back-btn"
-            onClick={() => navigate(-1)}
-          >
+          <button type="button" className="history-back-btn" onClick={() => navigate(-1)}>
             <svg
               width="18"
               height="18"
@@ -128,7 +115,6 @@ const DonationHistory = () => {
           </div>
         </div>
 
-        {/* Page Title & Subtitle */}
         <div className="history-header">
           <div className="history-badge">
             <span className="badge-pulse" />
@@ -142,7 +128,6 @@ const DonationHistory = () => {
           </p>
         </div>
 
-        {/* Summary Metrics Bar */}
         <div className="history-stats-grid">
           <div className="stat-card primary">
             <div className="stat-icon-box money">
@@ -186,7 +171,6 @@ const DonationHistory = () => {
           </div>
         </div>
 
-        {/* Filter & Search Bar */}
         <div className="history-filter-bar">
           <div className="search-input-wrapper">
             <svg
@@ -234,7 +218,6 @@ const DonationHistory = () => {
           </button>
         </div>
 
-        {/* Content Section: Loading, Error, Table, or Empty State */}
         {loading ? (
           <div className="history-loading-box">
             <div className="history-spinner" />
@@ -244,10 +227,7 @@ const DonationHistory = () => {
           <div className="history-error-card">
             <h3>Unable to load donations</h3>
             <p>{error}</p>
-            <button
-              className="retry-btn"
-              onClick={() => fetchDonations(currentUser?.mailid)}
-            >
+            <button className="retry-btn" onClick={() => fetchDonations(currentUser?.mailid)}>
               Try Again
             </button>
           </div>

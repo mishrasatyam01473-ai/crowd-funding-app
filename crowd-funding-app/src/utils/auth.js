@@ -1,18 +1,11 @@
-// ========================================================================
-// AUTHENTICATION UTILITY
-// User credentials are NOT persisted in localStorage across visits.
-// Each time a user opens/visits the website, they must enter their userid & password.
-// ========================================================================
+// Session-based authentication helper
+// User credentials are stored in sessionStorage so each new browser visit requires re-authentication.
 
 const AUTH_KEY = "user";
 
-/**
- * Retrieve the current session user.
- * Ensures localStorage is purged and never used to bypass login.
- */
 export function getAuthUser() {
   try {
-    // Explicitly purge any legacy or stored credentials from localStorage
+    // Purge any legacy credentials from localStorage
     if (typeof window !== "undefined" && window.localStorage) {
       window.localStorage.removeItem(AUTH_KEY);
     }
@@ -25,24 +18,17 @@ export function getAuthUser() {
     if (!raw) return null;
 
     const parsed = JSON.parse(raw);
-    if (parsed && (parsed.id || parsed.mailid)) {
-      return parsed;
-    }
-    return null;
+    return parsed && (parsed.id || parsed.mailid) ? parsed : null;
   } catch (err) {
     console.error("Failed to read session user:", err);
     return null;
   }
 }
 
-/**
- * Save user into active sessionStorage ONLY (never in localStorage).
- */
 export function setAuthUser(user) {
   try {
     if (typeof window !== "undefined") {
-      // Ensure localStorage has no auth data
-      window.localStorage.removeItem(AUTH_KEY);
+      window.localStorage?.removeItem(AUTH_KEY);
 
       if (window.sessionStorage) {
         if (user) {
@@ -58,18 +44,11 @@ export function setAuthUser(user) {
   }
 }
 
-/**
- * Clear user from all storages on logout.
- */
 export function clearAuthUser() {
   try {
     if (typeof window !== "undefined") {
-      if (window.sessionStorage) {
-        window.sessionStorage.removeItem(AUTH_KEY);
-      }
-      if (window.localStorage) {
-        window.localStorage.removeItem(AUTH_KEY);
-      }
+      window.sessionStorage?.removeItem(AUTH_KEY);
+      window.localStorage?.removeItem(AUTH_KEY);
       window.dispatchEvent(new Event("authChange"));
     }
   } catch (err) {
@@ -77,11 +56,11 @@ export function clearAuthUser() {
   }
 }
 
-// Immediately purge any stale user entry in localStorage when this module loads
+// Initial cleanup of localStorage on module load
 if (typeof window !== "undefined" && window.localStorage) {
   try {
     window.localStorage.removeItem(AUTH_KEY);
   } catch {
-    // Ignore errors during initial purge
+    // Ignore cleanup errors
   }
 }

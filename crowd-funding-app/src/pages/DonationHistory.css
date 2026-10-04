@@ -1,7 +1,4 @@
-/* =========================================================
-   DONATION HISTORY PAGE STYLES
-   ========================================================= */
-
+/* Donation History Page Styles */
 .history-page {
   position: relative;
   min-height: 100vh;
@@ -12,7 +9,6 @@
   overflow-x: hidden;
 }
 
-/* Background Ambient Glows */
 .history-bg-glow {
   position: absolute;
   border-radius: 50%;
@@ -38,7 +34,6 @@
   background: #2ed573;
 }
 
-/* Container */
 .history-container {
   position: relative;
   z-index: 1;
@@ -46,10 +41,7 @@
   margin: 0 auto;
 }
 
-/* =========================================================
-   BREADCRUMB & BACK BUTTON
-   ========================================================= */
-
+/* Breadcrumbs */
 .history-breadcrumb-bar {
   display: flex;
   align-items: center;
@@ -105,10 +97,7 @@
   font-weight: 600;
 }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
-
+/* Header */
 .history-header {
   margin-bottom: 36px;
 }
@@ -159,10 +148,7 @@
   max-width: 650px;
 }
 
-/* =========================================================
-   STATS METRICS GRID
-   ========================================================= */
-
+/* Metrics Grid */
 .history-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -238,10 +224,7 @@
   letter-spacing: -0.02em;
 }
 
-/* =========================================================
-   FILTER & SEARCH BAR
-   ========================================================= */
-
+/* Filter Bar */
 .history-filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -295,37 +278,6 @@
   color: #ffffff;
 }
 
-.email-lookup-form {
-  display: flex;
-  gap: 8px;
-}
-
-.lookup-input {
-  padding: 10px 14px;
-  background: rgba(22, 27, 34, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 0.88rem;
-  outline: none;
-}
-
-.lookup-btn {
-  padding: 10px 16px;
-  background: #ff4757;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.lookup-btn:hover {
-  background: #ee3546;
-}
-
 .refresh-btn {
   display: inline-flex;
   align-items: center;
@@ -346,10 +298,7 @@
   color: #ffffff;
 }
 
-/* =========================================================
-   TABLE VIEW
-   ========================================================= */
-
+/* Table View */
 .history-table-wrapper {
   overflow-x: auto;
   border-radius: 14px;
@@ -387,7 +336,6 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Cell specifics */
 .campaign-name-cell .cell-flex {
   display: flex;
   align-items: center;
@@ -474,10 +422,7 @@
   border-radius: 5px;
 }
 
-/* =========================================================
-   EMPTY STATE & LOADING & ERROR
-   ========================================================= */
-
+/* Empty, Loading, and Error States */
 .history-empty-card,
 .history-error-card,
 .history-loading-box {
@@ -550,10 +495,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* =========================================================
-   RESPONSIVE DESIGN
-   ========================================================= */
-
 @media (max-width: 768px) {
   .history-page {
     padding: 24px 14px 60px;
@@ -566,13 +507,5 @@
   .history-filter-bar {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .email-lookup-form {
-    width: 100%;
-  }
-
-  .lookup-input {
-    flex: 1;
   }
 }

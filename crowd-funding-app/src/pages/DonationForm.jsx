@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { getAuthUser } from "../utils/auth.js";
@@ -10,37 +10,26 @@ const DonationForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Campaign data received from the Donate button
   const campaign = location.state || {};
 
-  const [campaignId, setCampaignId] = useState(
-    campaign.campaignId || campaign._id || ""
-  );
-  const [campaignName, setCampaignName] = useState(
-    campaign.campaignName || campaign.title || ""
-  );
-  const [creatorName, setCreatorName] = useState(
-    campaign.creatorName || campaign.creator || ""
-  );
-  const [description, setDescription] = useState(
-    campaign.description || ""
-  );
+  const [campaignId, setCampaignId] = useState(campaign.campaignId || campaign._id || "");
+  const [campaignName, setCampaignName] = useState(campaign.campaignName || campaign.title || "");
+  const [creatorName, setCreatorName] = useState(campaign.creatorName || campaign.creator || "");
+  const [description, setDescription] = useState(campaign.description || "");
 
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Pre-fill user information if logged in in current session
-  React.useEffect(() => {
+  useEffect(() => {
     const user = getAuthUser();
-    if (user && user.mailid) {
+    if (user?.mailid) {
       setDonorEmail(user.mailid);
     }
   }, []);
 
-  // Auto-fetch campaign details if campaignName or creatorName is missing
-  React.useEffect(() => {
+  useEffect(() => {
     if (!campaignName || !creatorName) {
       fetch(`${API_BASE_URL}/api/campaigns`)
         .then((res) => res.json())
@@ -48,9 +37,7 @@ const DonationForm = () => {
           if (Array.isArray(campaignsList) && campaignsList.length > 0) {
             let matched = null;
             if (campaignId) {
-              matched = campaignsList.find(
-                (c) => String(c._id) === String(campaignId)
-              );
+              matched = campaignsList.find((c) => String(c._id) === String(campaignId));
             }
             if (!matched && campaignsList[0]) {
               matched = campaignsList[0];
@@ -67,16 +54,10 @@ const DonationForm = () => {
     }
   }, [campaignId, campaignName, creatorName, description]);
 
-  // =====================================================
-  // QUICK PRESET SELECTION
-  // =====================================================
   const handlePresetSelect = (preset) => {
     setAmount(String(preset));
   };
 
-  // =====================================================
-  // SUBMIT DONATION
-  // =====================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,165 +74,101 @@ const DonationForm = () => {
     try {
       setLoading(true);
 
-      // =================================================
-      // CREATE RAZORPAY ORDER
-      // =================================================
-      const response = await fetch(
-        `${API_BASE_URL}/api/create-donation-order`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            campaignId,
-            creatorName,
-            campaignName,
-            description,
-            donorName: donorName.trim(),
-            donorEmail: donorEmail.trim(),
-            amount: Number(amount),
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/create-donation-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          campaignId,
+          creatorName,
+          campaignName,
+          description,
+          donorName: donorName.trim(),
+          donorEmail: donorEmail.trim(),
+          amount: Number(amount),
+        }),
+      });
 
       const orderData = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          orderData.message || "Unable to create payment order."
-        );
+        throw new Error(orderData.message || "Unable to create payment order.");
       }
 
-      // =================================================
-      // CHECK RAZORPAY
-      // =================================================
       if (!window.Razorpay) {
-        alert(
-          "Razorpay could not be loaded. Please refresh the page."
-        );
+        alert("Razorpay could not be loaded. Please refresh the page.");
         setLoading(false);
         return;
       }
 
-      // =================================================
-      // RAZORPAY OPTIONS
-      // =================================================
       const options = {
         key: orderData.key,
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Crowdfunding Website",
-        description: campaignName
-          ? `Donation for ${campaignName}`
-          : "Support Crowdfunding Cause",
+        description: campaignName ? `Donation for ${campaignName}` : "Support Crowdfunding Cause",
         order_id: orderData.orderId,
-
-        // ===============================================
-        // PAYMENT SUCCESS
-        // ===============================================
-        handler: async function (paymentResponse) {
+        handler: async (paymentResponse) => {
           try {
-            const verifyResponse = await fetch(
-              `${API_BASE_URL}/api/verify-donation`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  campaignId,
-                  creatorName,
-                  campaignName,
-                  description,
-                  donorName: donorName.trim(),
-                  donorEmail: donorEmail.trim(),
-                  amount: Number(amount),
-                  razorpayOrderId: paymentResponse.razorpay_order_id,
-                  razorpayPaymentId: paymentResponse.razorpay_payment_id,
-                  razorpaySignature: paymentResponse.razorpay_signature,
-                }),
-              }
-            );
+            const verifyResponse = await fetch(`${API_BASE_URL}/api/verify-donation`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                campaignId,
+                creatorName,
+                campaignName,
+                description,
+                donorName: donorName.trim(),
+                donorEmail: donorEmail.trim(),
+                amount: Number(amount),
+                razorpayOrderId: paymentResponse.razorpay_order_id,
+                razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                razorpaySignature: paymentResponse.razorpay_signature,
+              }),
+            });
 
             const result = await verifyResponse.json();
 
             if (!verifyResponse.ok) {
-              throw new Error(
-                result.message || "Payment verification failed."
-              );
+              throw new Error(result.message || "Payment verification failed.");
             }
 
-            alert(
-              "Donation successful! Thank you for your generous support."
-            );
+            alert("Donation successful! Thank you for your generous support.");
 
             setDonorName("");
             setAmount("");
 
-            // Navigate to Donation History page so the user sees their receipt
             navigate("/donation-history");
           } catch (error) {
             console.error("Verification error:", error);
-            alert(
-              error.message || "Payment verification failed."
-            );
+            alert(error.message || "Payment verification failed.");
             setLoading(false);
           }
         },
-
-        // ===============================================
-        // PREFILL
-        // ===============================================
         prefill: {
           name: donorName.trim(),
         },
-
-        // ===============================================
-        // NOTES
-        // ===============================================
         notes: {
           campaignId: String(campaignId),
-          campaignName: campaignName,
+          campaignName,
         },
-
-        // ===============================================
-        // THEME
-        // ===============================================
         theme: {
           color: "#1687ff",
         },
-
-        // ===============================================
-        // MODAL CLOSED
-        // ===============================================
         modal: {
-          ondismiss: function () {
+          ondismiss: () => {
             setLoading(false);
           },
         },
       };
 
-      // =================================================
-      // CREATE RAZORPAY OBJECT
-      // =================================================
       const razorpay = new window.Razorpay(options);
 
-      // =================================================
-      // PAYMENT FAILED
-      // =================================================
-      razorpay.on("payment.failed", function (response) {
-        console.error("Payment failed:", response);
-        alert(
-          response.error?.description ||
-            "Payment failed. Please try again."
-        );
+      razorpay.on("payment.failed", (res) => {
+        console.error("Payment failed:", res);
+        alert(res.error?.description || "Payment failed. Please try again.");
         setLoading(false);
       });
 
-      // =================================================
-      // OPEN PAYMENT WINDOW
-      // =================================================
       razorpay.open();
     } catch (error) {
       console.error("Donation error:", error);
@@ -260,41 +177,29 @@ const DonationForm = () => {
     }
   };
 
-  // =====================================================
-  // RESET
-  // =====================================================
   const handleReset = () => {
     setDonorName("");
     setAmount("");
   };
 
-  // =====================================================
-  // BACK
-  // =====================================================
   const handleBack = () => {
     navigate(-1);
   };
 
-  // Avatar initials helper
   const getInitials = (name) => {
     if (!name) return "CF";
     const parts = name.trim().split(" ");
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
+    return parts.length >= 2
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : name.slice(0, 2).toUpperCase();
   };
 
   return (
     <div className="donation-page">
-      {/* Background glow orbs */}
       <div className="donation-bg-glow glow-1" aria-hidden="true" />
       <div className="donation-bg-glow glow-2" aria-hidden="true" />
 
       <div className="donation-container">
-        {/* ============================================
-            NAVIGATION & BREADCRUMB
-        ============================================ */}
         <div className="donation-nav-bar">
           <button
             type="button"
@@ -325,9 +230,6 @@ const DonationForm = () => {
           </div>
         </div>
 
-        {/* ============================================
-            PAGE HEADER
-        ============================================ */}
         <div className="donation-header">
           <div className="header-badge">
             <span className="badge-pulse-dot" />
@@ -339,13 +241,7 @@ const DonationForm = () => {
           </p>
         </div>
 
-        {/* ============================================
-            MAIN CONTENT GRID (Split Columns)
-        ============================================ */}
         <div className="donation-content-grid">
-          {/* ------------------------------------------
-              LEFT COLUMN: CAMPAIGN INFORMATION & IMPACT
-          ------------------------------------------- */}
           <aside className="campaign-summary-card">
             <div className="campaign-card-header">
               <span className="campaign-chip">
@@ -375,23 +271,15 @@ const DonationForm = () => {
               {campaignName || "General Community Support Initiative"}
             </h2>
 
-            {/* Creator / Organizer Profile */}
             <div className="creator-profile-box">
               <div className="creator-avatar" aria-hidden="true">
                 {getInitials(creatorName)}
               </div>
               <div className="creator-details">
                 <span className="creator-label">Organized by</span>
-                <span className="creator-name">
-                  {creatorName || "Verified Project Lead"}
-                </span>
+                <span className="creator-name">{creatorName || "Verified Project Lead"}</span>
                 <span className="creator-verified-tag">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                   </svg>
                   Verified Organizer
@@ -399,7 +287,6 @@ const DonationForm = () => {
               </div>
             </div>
 
-            {/* Campaign Description */}
             <div className="campaign-description-section">
               <h3 className="section-label">About this Cause</h3>
               <div className="campaign-description-body">
@@ -413,7 +300,6 @@ const DonationForm = () => {
               </div>
             </div>
 
-            {/* Trust Badges */}
             <div className="campaign-trust-box">
               <div className="trust-item">
                 <div className="trust-icon shield">
@@ -459,9 +345,6 @@ const DonationForm = () => {
             </div>
           </aside>
 
-          {/* ------------------------------------------
-              RIGHT COLUMN: DONATION PAYMENT DETAILS FORM
-          ------------------------------------------- */}
           <main className="donation-form-wrapper">
             <form className="donation-card-form" onSubmit={handleSubmit} noValidate>
               <div className="form-card-header">
@@ -469,7 +352,6 @@ const DonationForm = () => {
                 <span className="step-pill">Secure Step</span>
               </div>
 
-              {/* Verified Campaign & Creator Badge */}
               <div className="active-campaign-banner">
                 <div className="banner-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -486,11 +368,8 @@ const DonationForm = () => {
                 </div>
               </div>
 
-              {/* Preset Amounts Selector */}
               <div className="amount-preset-section">
-                <label className="input-group-label">
-                  Select an Amount (INR)
-                </label>
+                <label className="input-group-label">Select an Amount (INR)</label>
                 <div className="preset-buttons-row">
                   {PRESET_AMOUNTS.map((preset) => {
                     const isSelected = String(amount) === String(preset);
@@ -508,7 +387,6 @@ const DonationForm = () => {
                 </div>
               </div>
 
-              {/* Amount Custom Input */}
               <div className="form-group custom-amount-group">
                 <label htmlFor="donation-amount" className="input-group-label">
                   Or Enter Custom Amount <span className="required-star">*</span>
@@ -527,16 +405,11 @@ const DonationForm = () => {
                     required
                     className="donation-input amount-field"
                   />
-                  {amount && Number(amount) > 0 && (
-                    <span className="currency-suffix-tag">INR</span>
-                  )}
+                  {amount && Number(amount) > 0 && <span className="currency-suffix-tag">INR</span>}
                 </div>
-                <p className="input-helper-text">
-                  Minimum contribution is ₹1. Every rupee counts.
-                </p>
+                <p className="input-helper-text">Minimum contribution is ₹1. Every rupee counts.</p>
               </div>
 
-              {/* Donor Full Name */}
               <div className="form-group">
                 <label htmlFor="donor-name" className="input-group-label">
                   Your Full Name <span className="required-star">*</span>
@@ -573,7 +446,6 @@ const DonationForm = () => {
                 </p>
               </div>
 
-              {/* Donor Email */}
               <div className="form-group">
                 <label htmlFor="donor-email" className="input-group-label">
                   Your Email (for Receipt & History)
@@ -609,7 +481,6 @@ const DonationForm = () => {
                 </p>
               </div>
 
-              {/* Contribution Summary Notice */}
               <div className="donation-summary-banner">
                 <div className="summary-banner-content">
                   <span className="summary-title">Total Contribution:</span>
@@ -621,7 +492,6 @@ const DonationForm = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="donation-action-buttons">
                 <button
                   type="button"
@@ -653,11 +523,7 @@ const DonationForm = () => {
                   <span>Reset</span>
                 </button>
 
-                <button
-                  type="submit"
-                  className="btn-action btn-submit"
-                  disabled={loading}
-                >
+                <button type="submit" className="btn-action btn-submit" disabled={loading}>
                   {loading ? (
                     <span className="btn-loading-state">
                       <span className="spinner-circle" aria-hidden="true" />
@@ -684,7 +550,6 @@ const DonationForm = () => {
                 </button>
               </div>
 
-              {/* Razorpay Trust Footer */}
               <div className="razorpay-trust-footer">
                 <div className="security-icon-circle">
                   <svg

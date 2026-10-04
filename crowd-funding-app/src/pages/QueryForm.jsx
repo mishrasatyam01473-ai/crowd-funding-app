@@ -91,9 +91,7 @@ const QueryForm = () => {
 
       const response = await fetch(`${API_BASE_URL}/api/submit-query`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
@@ -115,7 +113,6 @@ const QueryForm = () => {
         message: data.message,
       });
 
-      // Clear the form fields
       setFormData({
         name: "",
         email: "",
@@ -125,9 +122,7 @@ const QueryForm = () => {
       });
     } catch (error) {
       console.error("Query submission error:", error);
-      setErrorMessage(
-        error.message || "Something went wrong. Please try again later."
-      );
+      setErrorMessage(error.message || "Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -135,12 +130,10 @@ const QueryForm = () => {
 
   return (
     <div className="query-page">
-      {/* Background ambient decorative glows */}
       <div className="query-bg-glow glow-primary" aria-hidden="true" />
       <div className="query-bg-glow glow-secondary" aria-hidden="true" />
 
       <div className="query-container">
-        {/* Navigation & Breadcrumbs */}
         <div className="query-nav-bar">
           <button
             type="button"
@@ -171,7 +164,6 @@ const QueryForm = () => {
           </div>
         </div>
 
-        {/* Page Header */}
         <header className="query-header">
           <div className="query-badge">
             <span className="badge-pulse-indicator" />
@@ -184,11 +176,7 @@ const QueryForm = () => {
           </p>
         </header>
 
-        {/* Main Grid: Info Cards (Left) + Form (Right) */}
         <div className="query-grid">
-          {/* ==========================================
-              LEFT COLUMN: CONTACT INFO & HELP TOPICS
-          ========================================== */}
           <aside className="query-info-sidebar">
             <div className="info-card highlight-card">
               <div className="info-card-header">
@@ -285,11 +273,7 @@ const QueryForm = () => {
             </div>
           </aside>
 
-          {/* ==========================================
-              RIGHT COLUMN: QUERY SUBMISSION FORM
-          ========================================== */}
           <main className="query-form-card">
-            {/* Success Notification Banner */}
             {submissionResult ? (
               <div className="query-success-panel">
                 <div className="success-icon-badge">
@@ -308,7 +292,6 @@ const QueryForm = () => {
                 </div>
 
                 <h2 className="success-heading">Query Submitted Successfully!</h2>
-
                 <p className="success-subtext">
                   Thank you for reaching out. Your query has been logged and assigned the reference tracking ID below:
                 </p>
@@ -347,7 +330,6 @@ const QueryForm = () => {
                   <span className="query-status-chip">Official Registry</span>
                 </div>
 
-                {/* Error Banner */}
                 {errorMessage && (
                   <div className="form-error-banner" role="alert">
                     <svg
@@ -366,9 +348,7 @@ const QueryForm = () => {
                   </div>
                 )}
 
-                {/* Name & Email Row */}
                 <div className="form-row-two">
-                  {/* Full Name */}
                   <div className="form-field-group">
                     <label htmlFor="query-name" className="field-label">
                       Full Name <span className="req-star">*</span>
@@ -402,7 +382,6 @@ const QueryForm = () => {
                     </div>
                   </div>
 
-                  {/* Email Address */}
                   <div className="form-field-group">
                     <label htmlFor="query-email" className="field-label">
                       Email Address <span className="req-star">*</span>
@@ -437,9 +416,7 @@ const QueryForm = () => {
                   </div>
                 </div>
 
-                {/* Phone & Subject Row */}
                 <div className="form-row-two">
-                  {/* Phone Number */}
                   <div className="form-field-group">
                     <label htmlFor="query-phone" className="field-label">
                       Phone Number <span className="optional-tag">(Optional)</span>
@@ -471,7 +448,6 @@ const QueryForm = () => {
                     </div>
                   </div>
 
-                  {/* Subject Dropdown */}
                   <div className="form-field-group">
                     <label htmlFor="query-subject" className="field-label">
                       Query Subject / Topic <span className="req-star">*</span>
@@ -495,7 +471,6 @@ const QueryForm = () => {
                   </div>
                 </div>
 
-                {/* Quick Subject Pills */}
                 <div className="quick-category-section">
                   <span className="quick-label">Or choose topic:</span>
                   <div className="quick-pills-row">
@@ -503,9 +478,7 @@ const QueryForm = () => {
                       <button
                         key={cat}
                         type="button"
-                        className={`category-pill ${
-                          formData.subject === cat ? "active" : ""
-                        }`}
+                        className={`category-pill ${formData.subject === cat ? "active" : ""}`}
                         onClick={() => handleCategorySelect(cat)}
                       >
                         {cat}
@@ -514,15 +487,12 @@ const QueryForm = () => {
                   </div>
                 </div>
 
-                {/* Message Field */}
                 <div className="form-field-group">
                   <div className="label-with-counter">
                     <label htmlFor="query-message" className="field-label">
                       Message / Query Details <span className="req-star">*</span>
                     </label>
-                    <span className="char-counter">
-                      {formData.message.length} characters
-                    </span>
+                    <span className="char-counter">{formData.message.length} characters</span>
                   </div>
 
                   <textarea
@@ -540,7 +510,6 @@ const QueryForm = () => {
                   </p>
                 </div>
 
-                {/* Form Buttons */}
                 <div className="query-form-actions">
                   <button
                     type="button"
@@ -548,20 +517,13 @@ const QueryForm = () => {
                     onClick={handleReset}
                     disabled={
                       loading ||
-                      (!formData.name &&
-                        !formData.email &&
-                        !formData.phone &&
-                        !formData.message)
+                      (!formData.name && !formData.email && !formData.phone && !formData.message)
                     }
                   >
                     Clear Form
                   </button>
 
-                  <button
-                    type="submit"
-                    className="btn-submit-query"
-                    disabled={loading}
-                  >
+                  <button type="submit" className="btn-submit-query" disabled={loading}>
                     {loading ? (
                       <span className="btn-loading-state">
                         <span className="spinner-dot" aria-hidden="true" />

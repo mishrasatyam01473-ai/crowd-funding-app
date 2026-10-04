@@ -1,27 +1,23 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import Navbar from './components/Navbar.jsx'
-import Footer from './components/Footer.jsx'
-import IndexPage from './components/IndexPage.jsx'
-import CreateProgramme from './pages/CreateProgramme.jsx'
-import QueryForm from './pages/QueryForm.jsx'
-import Login from './pages/Login.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-import DonationForm from './pages/DonationForm.jsx'
-import DonationHistory from './pages/DonationHistory.jsx'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+import IndexPage from './components/IndexPage.jsx';
+import CreateProgramme from './pages/CreateProgramme.jsx';
+import QueryForm from './pages/QueryForm.jsx';
+import Login from './pages/Login.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import DonationForm from './pages/DonationForm.jsx';
+import DonationHistory from './pages/DonationHistory.jsx';
+import { getAuthUser } from './utils/auth.js';
 
-import { getAuthUser } from './utils/auth.js'
-
-// Export getStoredUser as an alias to getAuthUser for compatibility
 export const getStoredUser = getAuthUser;
 
-// Protected Route Component: Restricts access so unauthenticated visitors cannot access any page
 function ProtectedRoute({ children }) {
   const location = useLocation();
   const user = getStoredUser();
 
   if (!user) {
-    // Redirect unauthenticated visitors immediately to login or signup
     return <Navigate to="/user-login" replace state={{ from: location.pathname }} />;
   }
 
@@ -32,11 +28,8 @@ function AppContent() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getStoredUser()));
 
-  // Synchronize authentication state across window events and storage
   useEffect(() => {
-    const handleAuthSync = () => {
-      setIsAuthenticated(Boolean(getStoredUser()));
-    };
+    const handleAuthSync = () => setIsAuthenticated(Boolean(getStoredUser()));
 
     window.addEventListener('authChange', handleAuthSync);
     window.addEventListener('storage', handleAuthSync);
@@ -53,13 +46,13 @@ function AppContent() {
       <Navbar />
 
       <Routes>
-        {/* Public Authentication Routes */}
+        {/* Auth routes */}
         <Route path="/user-login" element={<Login />} />
         <Route path="/login" element={<Navigate to="/user-login" replace />} />
         <Route path="/signup" element={<Login initialSignUp={true} />} />
         <Route path="/register" element={<Login initialSignUp={true} />} />
 
-        {/* All App Routes are Protected: Login or Signup required */}
+        {/* Protected application routes */}
         <Route
           path="/"
           element={
@@ -117,11 +110,10 @@ function AppContent() {
           }
         />
 
-        {/* Catch-all: Any undefined route redirects to login */}
+        {/* Fallback to login */}
         <Route path="*" element={<Navigate to="/user-login" replace />} />
       </Routes>
 
-      {/* Footer is only displayed when authenticated on main app pages */}
       {isAuthenticated && !isAuthRoute && <Footer />}
     </div>
   );

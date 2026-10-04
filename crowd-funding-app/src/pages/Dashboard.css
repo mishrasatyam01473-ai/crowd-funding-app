@@ -1,491 +1,453 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* ========================================================= DASHBOARD PAGE ========================================================= */
 .dashboard-page {
-    width: 100%;
-    min-height: 100vh;
-    padding: 50px 7% 80px;
-    overflow-x: hidden;
-    background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
-    color: #ffffff;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  padding: 50px 7% 80px;
+  overflow-x: hidden;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
+  color: #ffffff;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ========================================================= DASHBOARD HEADER ========================================================= */
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 25px;
-    margin-bottom: 40px;
-    padding-bottom: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 40px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* HEADER TITLE */
 .dashboard-header h1 {
-    margin: 0;
-    color: #ffffff;
-    font-size: clamp(2rem, 4vw, 2.7rem);
-    line-height: 1.2;
-    font-weight: 800;
-    letter-spacing: -0.04em;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.04em;
 }
 
-/* HEADER SUBTITLE */
 .dashboard-header p {
-    margin: 9px 0 0;
-    color: #aab4c0;
-    font-size: 0.98rem;
-    line-height: 1.6;
+  margin: 9px 0 0;
+  color: #aab4c0;
+  font-size: 0.98rem;
+  line-height: 1.6;
 }
 
-/* ========================================================= LOGOUT BUTTON ========================================================= */
 .logout-button {
-    min-height: 46px;
-    padding: 11px 22px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 0.92rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 46px;
+  padding: 11px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .logout-button:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
-/* ========================================================= SECTIONS ========================================================= */
 .user-section,
 .campaign-section {
-    width: 100%;
-    margin-bottom: 45px;
+  width: 100%;
+  margin-bottom: 45px;
 }
 
-/* SECTION HEADINGS */
 .user-section h2,
 .campaign-section h2 {
-    margin: 0 0 20px;
-    color: #ffffff;
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    line-height: 1.3;
-    font-weight: 750;
-    letter-spacing: -0.03em;
+  margin: 0 0 20px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -0.03em;
 }
 
-/* ========================================================= USER CARD ========================================================= */
 .user-card {
-    width: 100%;
-    padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 18px;
-    background: linear-gradient(180deg, #151b23, #11161d);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  width: 100%;
+  padding: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #151b23, #11161d);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .user-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(77, 163, 255, 0.35);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  border-color: rgba(77, 163, 255, 0.35);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
 }
 
-/* ========================================================= USER INFORMATION ========================================================= */
 .user-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .user-info:first-child {
-    padding-top: 0;
+  padding-top: 0;
 }
 
 .user-info:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
-/* INFO LABEL */
 .info-label {
-    color: #788493;
-    font-size: 0.88rem;
-    font-weight: 600;
+  color: #788493;
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
-/* INFO VALUE */
 .info-value {
-    max-width: 65%;
-    overflow: hidden;
-    color: #ffffff;
-    font-size: 0.96rem;
-    font-weight: 650;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  max-width: 65%;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 650;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* ========================================================= CAMPAIGN CARD ========================================================= */
 .campaign-card {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 18px;
-    background: linear-gradient(180deg, #151b23, #11161d);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #151b23, #11161d);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .campaign-card:hover {
-    transform: translateY(-7px);
-    border-color: rgba(77, 163, 255, 0.35);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
+  transform: translateY(-7px);
+  border-color: rgba(77, 163, 255, 0.35);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
 }
 
-/* ========================================================= CAMPAIGN IMAGE ========================================================= */
 .campaign-image-container {
-    width: 40%;
-    min-height: 320px;
-    background: #1c2530;
+  width: 40%;
+  min-height: 320px;
+  background: #1c2530;
 }
 
 .campaign-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* ========================================================= CAMPAIGN CONTENT ========================================================= */
 .campaign-content {
-    flex: 1;
-    min-width: 0;
-    padding: 30px;
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
 }
 
-/* CAMPAIGN TITLE */
 .campaign-content h3 {
-    margin: 0 0 15px;
-    color: #ffffff;
-    font-size: clamp(1.5rem, 3vw, 1.9rem);
-    line-height: 1.3;
-    font-weight: 750;
-    letter-spacing: -0.025em;
+  margin: 0 0 15px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -0.025em;
 }
 
-/* ========================================================= CAMPAIGN DESCRIPTION ========================================================= */
 .campaign-description {
-    margin: 0 0 28px;
-    color: #aab4c0;
-    font-size: 0.95rem;
-    line-height: 1.7;
+  margin: 0 0 28px;
+  color: #aab4c0;
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
-/* ========================================================= CAMPAIGN DETAILS ========================================================= */
 .campaign-detail {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .campaign-detail:first-child {
-    padding-top: 0;
+  padding-top: 0;
 }
 
 .campaign-detail:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-/* DETAIL LABEL */
 .campaign-detail span {
-    color: #788493;
-    font-size: 0.9rem;
+  color: #788493;
+  font-size: 0.9rem;
 }
 
-/* DETAIL VALUE */
 .campaign-detail strong {
-    color: #ffffff;
-    font-size: 0.95rem;
-    font-weight: 700;
-    text-align: right;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: right;
 }
 
-/* ========================================================= OPTIONAL BLUE HIGHLIGHT Works if you use a class such as .highlight ========================================================= */
 .campaign-detail .highlight {
-    color: #4da3ff;
+  color: #4da3ff;
 }
 
-/* ========================================================= LOADING ========================================================= */
 .dashboard-loading {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
-    color: #aeb8c5;
-    font-size: 1rem;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
+  color: #aeb8c5;
+  font-size: 1rem;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ========================================================= ERROR ========================================================= */
 .dashboard-error {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    text-align: center;
-    background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.12), transparent 35%), #0b0f14;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ERROR TITLE */
 .dashboard-error h2 {
-    margin: 0 0 10px;
-    color: #ff9ba5;
-    font-size: 1.8rem;
+  margin: 0 0 10px;
+  color: #ff9ba5;
+  font-size: 1.8rem;
 }
 
-/* ERROR TEXT */
 .dashboard-error p {
-    max-width: 500px;
-    margin: 0 0 22px;
-    color: #aab4c0;
-    line-height: 1.6;
+  max-width: 500px;
+  margin: 0 0 22px;
+  color: #aab4c0;
+  line-height: 1.6;
 }
 
-/* ERROR BUTTON */
 .dashboard-error button {
-    min-height: 46px;
-    padding: 10px 22px;
-    border: 1px solid #1687ff;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #007bff, #0062d6);
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 0.92rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 10px 28px rgba(0, 123, 255, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 46px;
+  padding: 10px 22px;
+  border: 1px solid #1687ff;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #007bff, #0062d6);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 123, 255, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dashboard-error button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 35px rgba(0, 123, 255, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(0, 123, 255, 0.35);
 }
 
-/* ========================================================= TABLET ========================================================= */
 @media (max-width: 1024px) {
-    .dashboard-page {
-        padding: 40px 5% 70px;
-    }
+  .dashboard-page {
+    padding: 40px 5% 70px;
+  }
 
-    .campaign-image-container {
-        width: 38%;
-        min-height: 300px;
-    }
+  .campaign-image-container {
+    width: 38%;
+    min-height: 300px;
+  }
 
-    .campaign-content {
-        padding: 25px;
-    }
+  .campaign-content {
+    padding: 25px;
+  }
 }
 
-/* ========================================================= MOBILE ========================================================= */
 @media (max-width: 768px) {
-    .dashboard-page {
-        padding: 30px 18px 60px;
-    }
+  .dashboard-page {
+    padding: 30px 18px 60px;
+  }
 
-    /* HEADER */
-    .dashboard-header {
-        align-items: flex-start;
-        margin-bottom: 32px;
-        padding-bottom: 22px;
-    }
+  .dashboard-header {
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding-bottom: 22px;
+  }
 
-    .dashboard-header h1 {
-        font-size: 1.9rem;
-    }
+  .dashboard-header h1 {
+    font-size: 1.9rem;
+  }
 
-    .dashboard-header p {
-        font-size: 0.9rem;
-    }
+  .dashboard-header p {
+    font-size: 0.9rem;
+  }
 
-    .logout-button {
-        flex-shrink: 0;
-        padding: 10px 16px;
-        font-size: 0.86rem;
-    }
+  .logout-button {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 0.86rem;
+  }
 
-    /* SECTIONS */
-    .user-section,
-    .campaign-section {
-        margin-bottom: 35px;
-    }
+  .user-section,
+  .campaign-section {
+    margin-bottom: 35px;
+  }
 
-    .user-section h2,
-    .campaign-section h2 {
-        font-size: 1.55rem;
-        margin-bottom: 17px;
-    }
+  .user-section h2,
+  .campaign-section h2 {
+    font-size: 1.55rem;
+    margin-bottom: 17px;
+  }
 
-    /* USER CARD */
-    .user-card {
-        padding: 20px;
-        border-radius: 16px;
-    }
+  .user-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
 
-    .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
 
-    .info-value {
-        max-width: 100%;
-        text-align: left;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-    }
+  .info-value {
+    max-width: 100%;
+    text-align: left;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
 
-    /* CAMPAIGN CARD */
-    .campaign-card {
-        flex-direction: column;
-        border-radius: 16px;
-    }
+  .campaign-card {
+    flex-direction: column;
+    border-radius: 16px;
+  }
 
-    .campaign-card:hover {
-        transform: none;
-    }
+  .campaign-card:hover {
+    transform: none;
+  }
 
-    /* IMAGE */
-    .campaign-image-container {
-        width: 100%;
-        height: 250px;
-        min-height: auto;
-    }
+  .campaign-image-container {
+    width: 100%;
+    height: 250px;
+    min-height: auto;
+  }
 
-    /* CONTENT */
-    .campaign-content {
-        padding: 22px;
-    }
+  .campaign-content {
+    padding: 22px;
+  }
 
-    .campaign-content h3 {
-        font-size: 1.45rem;
-    }
+  .campaign-content h3 {
+    font-size: 1.45rem;
+  }
 
-    .campaign-description {
-        margin-bottom: 22px;
-        font-size: 0.92rem;
-    }
+  .campaign-description {
+    margin-bottom: 22px;
+    font-size: 0.92rem;
+  }
 
-    /* DETAILS */
-    .campaign-detail {
-        align-items: flex-start;
-    }
+  .campaign-detail {
+    align-items: flex-start;
+  }
 }
 
-/* ========================================================= SMALL PHONES ========================================================= */
 @media (max-width: 500px) {
-    .dashboard-page {
-        padding: 25px 15px 50px;
-    }
+  .dashboard-page {
+    padding: 25px 15px 50px;
+  }
 
-    .dashboard-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 18px;
-    }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
 
-    .dashboard-header h1 {
-        font-size: 1.75rem;
-    }
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+  }
 
-    .logout-button {
-        width: 100%;
-    }
+  .logout-button {
+    width: 100%;
+  }
 
-    .user-card {
-        padding: 18px;
-    }
+  .user-card {
+    padding: 18px;
+  }
 
-    .campaign-image-container {
-        height: 210px;
-    }
+  .campaign-image-container {
+    height: 210px;
+  }
 
-    .campaign-content {
-        padding: 18px;
-    }
+  .campaign-content {
+    padding: 18px;
+  }
 
-    .campaign-content h3 {
-        font-size: 1.3rem;
-    }
+  .campaign-content h3 {
+    font-size: 1.3rem;
+  }
 
-    .campaign-detail {
-        gap: 12px;
-        padding: 13px 0;
-    }
+  .campaign-detail {
+    gap: 12px;
+    padding: 13px 0;
+  }
 
-    .campaign-detail span,
-    .campaign-detail strong {
-        font-size: 0.85rem;
-    }
+  .campaign-detail span,
+  .campaign-detail strong {
+    font-size: 0.85rem;
+  }
 }
 
-/* ========================================================= VERY SMALL PHONES ========================================================= */
 @media (max-width: 380px) {
-    .dashboard-page {
-        padding-inline: 12px;
-    }
+  .dashboard-page {
+    padding-inline: 12px;
+  }
 
-    .dashboard-header h1 {
-        font-size: 1.6rem;
-    }
+  .dashboard-header h1 {
+    font-size: 1.6rem;
+  }
 
-    .user-section h2,
-    .campaign-section h2 {
-        font-size: 1.4rem;
-    }
+  .user-section h2,
+  .campaign-section h2 {
+    font-size: 1.4rem;
+  }
 
-    .campaign-image-container {
-        height: 190px;
-    }
+  .campaign-image-container {
+    height: 190px;
+  }
 
-    .campaign-content {
-        padding: 16px;
-    }
+  .campaign-content {
+    padding: 16px;
+  }
 }
 
-/* ========================================================= REDUCED MOTION ========================================================= */
 @media (prefers-reduced-motion: reduce) {
-
-    .user-card,
-    .campaign-card,
-    .logout-button,
-    .dashboard-error button {
-        transition: none;
-    }
+  .user-card,
+  .campaign-card,
+  .logout-button,
+  .dashboard-error button {
+    transition: none;
+  }
 }

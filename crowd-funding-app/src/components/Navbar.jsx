@@ -8,14 +8,10 @@ function Navbar() {
   const location = useLocation();
   const [user, setUser] = useState(() => getAuthUser());
 
-  // Sync logged in user state on mount, navigation, and custom auth events
   useEffect(() => {
-    const syncUser = () => {
-      setUser(getAuthUser());
-    };
+    const syncUser = () => setUser(getAuthUser());
 
     syncUser();
-
     window.addEventListener('authChange', syncUser);
     window.addEventListener('storage', syncUser);
 
@@ -34,8 +30,6 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-
-        {/* Logo */}
         <div className="navbar-brand">
           <button
             className="brand-button"
@@ -45,12 +39,8 @@ function Navbar() {
           </button>
         </div>
 
-
-        {/* Navigation Menu (Visible only when logged in) */}
         {user && (
           <ul className="navbar-menu">
-
-            {/* Home */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
@@ -59,9 +49,6 @@ function Navbar() {
                 Home
               </button>
             </li>
-
-
-            {/* About */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
@@ -70,9 +57,6 @@ function Navbar() {
                 About
               </button>
             </li>
-
-
-            {/* Create Programme */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/create-programme' ? 'active' : ''}`}
@@ -81,9 +65,6 @@ function Navbar() {
                 Create Programme
               </button>
             </li>
-
-
-            {/* Query Form */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/query-form' ? 'active' : ''}`}
@@ -92,9 +73,6 @@ function Navbar() {
                 Query Form
               </button>
             </li>
-
-
-            {/* Dashboard */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
@@ -103,9 +81,6 @@ function Navbar() {
                 Dashboard
               </button>
             </li>
-
-
-            {/* Donation History Nav Link */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/donation-history' ? 'active' : ''}`}
@@ -114,12 +89,9 @@ function Navbar() {
                 My Donations
               </button>
             </li>
-
           </ul>
         )}
 
-
-        {/* User Actions */}
         <div className="navbar-actions">
           {user ? (
             <div className="user-action-group">
@@ -161,7 +133,6 @@ function Navbar() {
             </div>
           )}
         </div>
-
       </div>
     </nav>
   );
