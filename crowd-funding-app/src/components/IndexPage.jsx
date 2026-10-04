@@ -15,10 +15,10 @@ const IndexPage = () => {
   const handleDonate = (campaign) => {
     navigate("/donate", {
       state: {
-        creatorName: campaign.creatorName,
-        campaignName: campaign.campaignName,
-        description: campaign.description,
-        campaignId: campaign._id,
+        creatorName: campaign.creator || campaign.creatorName || "",
+        campaignName: campaign.title || campaign.campaignName || "",
+        description: campaign.description || "",
+        campaignId: campaign._id || campaign.campaignId || "",
       },
     });
   };

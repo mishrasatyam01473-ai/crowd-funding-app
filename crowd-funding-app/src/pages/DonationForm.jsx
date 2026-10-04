@@ -12,10 +12,18 @@ const DonationForm = () => {
   // Campaign data received from the Donate button
   const campaign = location.state || {};
 
-  const creatorName = campaign.creatorName || "";
-  const campaignName = campaign.campaignName || "";
-  const description = campaign.description || "";
-  const campaignId = campaign.campaignId || campaign._id || "";
+  const [campaignId, setCampaignId] = useState(
+    campaign.campaignId || campaign._id || ""
+  );
+  const [campaignName, setCampaignName] = useState(
+    campaign.campaignName || campaign.title || ""
+  );
+  const [creatorName, setCreatorName] = useState(
+    campaign.creatorName || campaign.creator || ""
+  );
+  const [description, setDescription] = useState(
+    campaign.description || ""
+  );
 
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
@@ -34,6 +42,34 @@ const DonationForm = () => {
       }
     }
   }, []);
+
+  // Auto-fetch campaign details if campaignName or creatorName is missing
+  React.useEffect(() => {
+    if (!campaignName || !creatorName) {
+      fetch(`${API_BASE_URL}/api/campaigns`)
+        .then((res) => res.json())
+        .then((campaignsList) => {
+          if (Array.isArray(campaignsList) && campaignsList.length > 0) {
+            let matched = null;
+            if (campaignId) {
+              matched = campaignsList.find(
+                (c) => String(c._id) === String(campaignId)
+              );
+            }
+            if (!matched && campaignsList[0]) {
+              matched = campaignsList[0];
+            }
+            if (matched) {
+              if (!campaignId) setCampaignId(matched._id);
+              if (!campaignName) setCampaignName(matched.title || "Community Campaign");
+              if (!creatorName) setCreatorName(matched.creator || "Verified Creator");
+              if (!description) setDescription(matched.description || "");
+            }
+          }
+        })
+        .catch((err) => console.warn("Notice loading campaign context:", err.message));
+    }
+  }, [campaignId, campaignName, creatorName, description]);
 
   // =====================================================
   // QUICK PRESET SELECTION
@@ -435,6 +471,23 @@ const DonationForm = () => {
               <div className="form-card-header">
                 <h2>Donation Details</h2>
                 <span className="step-pill">Secure Step</span>
+              </div>
+
+              {/* Verified Campaign & Creator Badge */}
+              <div className="active-campaign-banner">
+                <div className="banner-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </div>
+                <div className="banner-content">
+                  <span className="banner-sub">Campaign:</span>
+                  <strong className="banner-title">{campaignName || "Community Initiative"}</strong>
+                  <div className="banner-creator-row">
+                    <span className="banner-creator-label">Campaign Creator:</span>
+                    <span className="banner-creator-val">{creatorName || "Verified Project Lead"}</span>
+                  </div>
+                </div>
               </div>
 
               {/* Preset Amounts Selector */}

@@ -543,76 +543,106 @@ try {
 // =====================================================
 // DONATION EXCEL FILE
 // =====================================================
-
-const donationExcelFile =
-  path.join(
-    DATA_FOLDER,
-    "DonationData.xlsx"
-  );
-
+// DONATION EXCEL FILE & HEADERS
+// Explicitly stores: Campaign Name, Creator Name, Donor Name,
+// Donor Email, Amount, Date and Time, Mode of Payment
 // =====================================================
-// EXCEL HEADERS
-// =====================================================
+
+const donationExcelFile = path.join(DATA_FOLDER, "DonationData.xlsx");
 
 const donationHeaders = [
   "Donation ID",
-  "Campaign ID",
-  "Creator Name",
   "Campaign Name",
-  "Campaign Description",
+  "Creator Name",
   "Donor Name",
+  "Donor Email",
   "Amount",
   "Currency",
+  "Mode of Payment",
+  "Date and Time",
+  "Payment Status",
+  "Campaign ID",
+  "Campaign Description",
   "Razorpay Order ID",
   "Razorpay Payment ID",
-  "Payment Status",
-  "Donation Date",
 ];
 
-// =====================================================
-// CREATE EXCEL FILE
-// =====================================================
-
-const createDonationExcelFile =
-  () => {
-    try {
-      if (
-        !fs.existsSync(
-          donationExcelFile
-        )
-      ) {
-        const workbook =
-          XLSX.utils.book_new();
-
-        const worksheet =
-          XLSX.utils.aoa_to_sheet([
-            donationHeaders,
-          ]);
-
-        XLSX.utils.book_append_sheet(
-          workbook,
-          worksheet,
-          "Donations"
-        );
-
-        XLSX.writeFile(
-          workbook,
-          donationExcelFile
-        );
-
-        console.log(
-          "DonationData.xlsx created successfully."
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Error creating Excel file:",
-        error
-      );
+const createDonationExcelFile = () => {
+  try {
+    if (!fs.existsSync(donationExcelFile)) {
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet([donationHeaders]);
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Donations");
+      XLSX.writeFile(workbook, donationExcelFile);
+      console.log("DonationData.xlsx created successfully with updated headers.");
     }
-  };
+  } catch (error) {
+    console.error("Error creating Excel file:", error);
+  }
+};
 
 createDonationExcelFile();
+
+// =====================================================
+// APPEND DONATION RECORD TO DONATIONDATA.XLSX
+// =====================================================
+
+const saveDonationToExcel = (record) => {
+  try {
+    createDonationExcelFile();
+
+    let workbook;
+    if (fs.existsSync(donationExcelFile)) {
+      workbook = XLSX.readFile(donationExcelFile);
+    } else {
+      workbook = XLSX.utils.book_new();
+    }
+
+    const sheetName = "Donations";
+    const worksheet =
+      workbook.Sheets[sheetName] || workbook.Sheets[workbook.SheetNames[0]];
+
+    let existingRows = [];
+    if (worksheet) {
+      existingRows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+    }
+
+    const newRow = {
+      "Donation ID": record.donationId || `DON-${Date.now()}`,
+      "Campaign Name": record.campaignName || "General Campaign",
+      "Creator Name": record.creatorName || "Verified Project Lead",
+      "Donor Name": record.donorName || "Anonymous",
+      "Donor Email": record.donorEmail || "",
+      "Amount": Number(record.amount || 0),
+      "Currency": record.currency || "INR",
+      "Mode of Payment": record.paymentMethod || "Razorpay (Online)",
+      "Date and Time": record.donationDate || new Date().toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }),
+      "Payment Status": record.paymentStatus || "SUCCESS",
+      "Campaign ID": record.campaignId || "",
+      "Campaign Description": record.description || "",
+      "Razorpay Order ID": record.razorpayOrderId || "",
+      "Razorpay Payment ID": record.razorpayPaymentId || "",
+    };
+
+    existingRows.push(newRow);
+
+    const newWorksheet = XLSX.utils.json_to_sheet(existingRows, {
+      header: donationHeaders,
+    });
+
+    workbook.Sheets[sheetName] = newWorksheet;
+    if (!workbook.SheetNames.includes(sheetName)) {
+      XLSX.utils.book_append_sheet(workbook, newWorksheet, sheetName);
+    }
+
+    XLSX.writeFile(workbook, donationExcelFile);
+    console.log("Donation successfully appended to DonationData.xlsx:", record.donationId);
+    return true;
+  } catch (err) {
+    console.error("Error appending to DonationData.xlsx:", err);
+    return false;
+  }
+};
 
 // =====================================================
 // QUERY EXCEL FILE SETUP
@@ -802,7 +832,7 @@ app.post(
   "/api/create-donation-order",
   async (req, res) => {
     try {
-      const {
+      let {
         campaignId,
         creatorName,
         campaignName,
@@ -811,6 +841,20 @@ app.post(
         donorEmail,
         amount,
       } = req.body;
+
+      // Auto-resolve campaign and creator from MongoDB if missing
+      if (campaignId && (!campaignName || !creatorName)) {
+        try {
+          const matchedCampaign = await Campaign.findById(campaignId);
+          if (matchedCampaign) {
+            campaignName = campaignName || matchedCampaign.title || "";
+            creatorName = creatorName || matchedCampaign.creator || "";
+            description = description || matchedCampaign.description || "";
+          }
+        } catch (cErr) {
+          console.warn("Notice: campaign lookup warning:", cErr.message);
+        }
+      }
 
       // -----------------------------------------------
       // VALIDATE DONOR NAME
@@ -951,7 +995,7 @@ app.post(
   "/api/verify-donation",
   async (req, res) => {
     try {
-      const {
+      let {
         campaignId,
         creatorName,
         campaignName,
@@ -964,6 +1008,20 @@ app.post(
         razorpayPaymentId,
         razorpaySignature,
       } = req.body;
+
+      // Auto-resolve campaign and creator from MongoDB if missing
+      if (campaignId && (!campaignName || !creatorName)) {
+        try {
+          const matchedCampaign = await Campaign.findById(campaignId);
+          if (matchedCampaign) {
+            campaignName = campaignName || matchedCampaign.title || "";
+            creatorName = creatorName || matchedCampaign.creator || "";
+            description = description || matchedCampaign.description || "";
+          }
+        } catch (cErr) {
+          console.warn("Notice: campaign lookup warning:", cErr.message);
+        }
+      }
 
       // -----------------------------------------------
       // VALIDATE PAYMENT DATA
@@ -1097,53 +1155,25 @@ app.post(
       }
 
       // =================================================
-      // SAVE TO EXCEL AS BACKUP RECORD
+      // SAVE DIRECTLY TO DONATIONDATA.XLSX
       // =================================================
 
-      try {
-        createDonationExcelFile();
-
-        const workbook = XLSX.readFile(donationExcelFile);
-        let worksheet = workbook.Sheets["Donations"] || workbook.Sheets[workbook.SheetNames[0]];
-
-        if (!worksheet) {
-          worksheet = XLSX.utils.aoa_to_sheet([donationHeaders]);
-          XLSX.utils.book_append_sheet(workbook, worksheet, "Donations");
-        }
-
-        const existingData = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-          defval: "",
-        });
-
-        if (existingData.length === 0) {
-          existingData.push(donationHeaders);
-        }
-
-        existingData.push([
-          donationId,
-          campaignId || "",
-          creatorName || "",
-          campaignName || "",
-          description || "",
-          donorName || "",
-          Number(amount),
-          "INR",
-          razorpayOrderId,
-          razorpayPaymentId,
-          "SUCCESS",
-          donationDate,
-          paymentMethod,
-          donorEmail || "",
-        ]);
-
-        const newWorksheet = XLSX.utils.aoa_to_sheet(existingData);
-        workbook.Sheets["Donations"] = newWorksheet;
-        XLSX.writeFile(workbook, donationExcelFile);
-        console.log("Donation appended to DonationData.xlsx:", donationId);
-      } catch (excelErr) {
-        console.warn("Excel record write notice:", excelErr.message);
-      }
+      saveDonationToExcel({
+        donationId,
+        campaignId,
+        creatorName,
+        campaignName,
+        description,
+        donorName: donorName ? donorName.trim() : "Anonymous",
+        donorEmail: donorEmail ? donorEmail.trim() : "",
+        amount: Number(amount),
+        currency: "INR",
+        paymentMethod,
+        razorpayOrderId,
+        razorpayPaymentId,
+        paymentStatus: "SUCCESS",
+        donationDate,
+      });
 
       return res.status(200).json({
         success: true,
@@ -1168,67 +1198,81 @@ app.post(
 );
 
 // =====================================================
-// GET DONATIONS (DONATION HISTORY)
+// GET DONATIONS (DONATION HISTORY FROM EXCEL ONLY)
 // =====================================================
 
 app.get("/api/donations", async (req, res) => {
   try {
     const { email, donorName } = req.query;
-    let query = {};
 
+    if (!fs.existsSync(donationExcelFile)) {
+      return res.status(200).json({
+        success: true,
+        source: "DonationData.xlsx",
+        donations: [],
+        count: 0,
+        totalAmount: 0,
+      });
+    }
+
+    const workbook = XLSX.readFile(donationExcelFile);
+    const worksheet =
+      workbook.Sheets["Donations"] ||
+      workbook.Sheets[workbook.SheetNames[0]];
+
+    if (!worksheet) {
+      return res.status(200).json({
+        success: true,
+        source: "DonationData.xlsx",
+        donations: [],
+        count: 0,
+        totalAmount: 0,
+      });
+    }
+
+    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+    // Normalize records read directly from DonationData.xlsx
+    const normalized = rows.map((r, idx) => ({
+      donationId: r["Donation ID"] || r.donationId || `DON-${idx}`,
+      campaignId: r["Campaign ID"] || r.campaignId || "",
+      campaignName: r["Campaign Name"] || r.campaignName || "Community Initiative",
+      creatorName: r["Creator Name"] || r["Campaign Creator"] || r.creatorName || "Verified Creator",
+      description: r["Campaign Description"] || r.description || "",
+      donorName: r["Donor Name"] || r.donorName || "Anonymous",
+      donorEmail: r["Donor Email"] || r.donorEmail || "",
+      amount: Number(r["Amount"] || r.amount || 0),
+      currency: r["Currency"] || r.currency || "INR",
+      paymentMethod: r["Mode of Payment"] || r["Payment Method"] || r.paymentMethod || "Razorpay (Online)",
+      razorpayOrderId: r["Razorpay Order ID"] || r.razorpayOrderId || "",
+      razorpayPaymentId: r["Razorpay Payment ID"] || r.razorpayPaymentId || "",
+      paymentStatus: r["Payment Status"] || r.paymentStatus || "SUCCESS",
+      donationDate: r["Date and Time"] || r["Donation Date"] || r.donationDate || "",
+    }));
+
+    let donations = normalized;
+
+    // Filter by logged-in user email or donor name if provided
     if (email && email.trim()) {
-      query.$or = [
-        { donorEmail: new RegExp(`^${email.trim()}$`, "i") },
-        { donorName: new RegExp(`^${email.trim()}$`, "i") },
-      ];
+      const q = email.trim().toLowerCase();
+      donations = normalized.filter((d) => {
+        const dEmail = (d.donorEmail || "").toLowerCase();
+        const dName = (d.donorName || "").toLowerCase();
+        return (
+          dEmail === q ||
+          dName === q ||
+          (q.includes("@") && dName === q.split("@")[0].toLowerCase())
+        );
+      });
     } else if (donorName && donorName.trim()) {
-      query.donorName = new RegExp(donorName.trim(), "i");
+      const q = donorName.trim().toLowerCase();
+      donations = normalized.filter(
+        (d) => d.donorName && d.donorName.toLowerCase().includes(q)
+      );
     }
 
-    let donations = await Donation.find(query).sort({ createdAt: -1 });
-
-    // Fallback: If MongoDB has no records, check Excel file
-    if (donations.length === 0 && fs.existsSync(donationExcelFile)) {
-      try {
-        const workbook = XLSX.readFile(donationExcelFile);
-        const worksheet =
-          workbook.Sheets["Donations"] ||
-          workbook.Sheets[workbook.SheetNames[0]];
-
-        if (worksheet) {
-          const rows = XLSX.utils.sheet_to_json(worksheet);
-          const normalized = rows.map((r, idx) => ({
-            donationId: r["Donation ID"] || `DON-${idx}`,
-            campaignId: r["Campaign ID"] || "",
-            creatorName: r["Creator Name"] || "",
-            campaignName: r["Campaign Name"] || "",
-            description: r["Campaign Description"] || "",
-            donorName: r["Donor Name"] || "Anonymous",
-            donorEmail: r["Donor Email"] || "",
-            amount: Number(r["Amount"] || 0),
-            currency: r["Currency"] || "INR",
-            paymentMethod: r["Payment Method"] || "Razorpay (Online)",
-            razorpayOrderId: r["Razorpay Order ID"] || "",
-            razorpayPaymentId: r["Razorpay Payment ID"] || "",
-            paymentStatus: r["Payment Status"] || "SUCCESS",
-            donationDate: r["Donation Date"] || "",
-          }));
-
-          if (email && email.trim()) {
-            const em = email.trim().toLowerCase();
-            donations = normalized.filter(
-              (d) =>
-                (d.donorEmail && d.donorEmail.toLowerCase() === em) ||
-                (d.donorName && d.donorName.toLowerCase() === em)
-            );
-          } else {
-            donations = normalized;
-          }
-        }
-      } catch (excelErr) {
-        console.warn("Excel read fallback notice:", excelErr.message);
-      }
-    }
+    // Sort newest first
+    donations = donations.reverse();
 
     const totalAmount = donations.reduce(
       (sum, item) => sum + (Number(item.amount) || 0),
@@ -1237,15 +1281,16 @@ app.get("/api/donations", async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      source: "DonationData.xlsx",
       donations,
       count: donations.length,
       totalAmount,
     });
   } catch (error) {
-    console.error("Fetch donations error:", error);
+    console.error("Fetch donations error from DonationData.xlsx:", error);
     return res.status(500).json({
       success: false,
-      message: "Could not fetch donation history.",
+      message: "Could not fetch donation history from DonationData.xlsx",
       error: error.message,
     });
   }
