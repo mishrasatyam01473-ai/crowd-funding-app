@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import "./Dashboard.css";
 
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    const [user, setUser] = useState(null);
-    const [campaign, setCampaign] = useState(null);
+    // Check auth synchronously on initial mount
+    const [user, setUser] = useState(() => {
+        const stored = localStorage.getItem("user");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                return parsed && (parsed.id || parsed.mailid) ? parsed : null;
+            } catch {
+                return null;
+            }
+        }
+        return null;
+    });
 
+    const [campaign, setCampaign] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -22,11 +34,23 @@ const Dashboard = () => {
                 const storedUser = localStorage.getItem("user");
 
                 if (!storedUser) {
-                    navigate("/user-login");
+                    navigate("/user-login", { replace: true });
                     return;
                 }
 
-                const parsedUser = JSON.parse(storedUser);
+                let parsedUser = null;
+                try {
+                    parsedUser = JSON.parse(storedUser);
+                } catch {
+                    parsedUser = null;
+                }
+
+                if (!parsedUser || (!parsedUser.id && !parsedUser.mailid)) {
+                    localStorage.removeItem("user");
+                    window.dispatchEvent(new Event("authChange"));
+                    navigate("/user-login", { replace: true });
+                    return;
+                }
 
                 // ==========================================
                 // FETCH USER + CAMPAIGN
@@ -75,6 +99,11 @@ const Dashboard = () => {
         window.dispatchEvent(new Event("authChange"));
         navigate("/user-login");
     };
+
+    // If unauthenticated, redirect immediately without showing loading
+    if (!user) {
+        return <Navigate to="/user-login" replace />;
+    }
 
     // ==========================================
     // LOADING
