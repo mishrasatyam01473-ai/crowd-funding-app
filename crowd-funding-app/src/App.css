@@ -29,10 +29,25 @@
   flex-direction: column;
 }
 
-/* Mobile Breakpoint (<960px) */
-@media (max-width: 960px) {
-  .mainPage.has-vertical-nav .main-content-layout {
-    margin-left: 0;
+/* Mobile & Tablet Breakpoint (<= 1024px) - Occupy full width, eliminate left blank space */
+@media (max-width: 1024px) {
+  .mainPage.has-vertical-nav {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .mainPage.has-vertical-nav .main-content-layout {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 !important;
+    padding: 0;
+    flex: 1 1 auto;
   }
 }

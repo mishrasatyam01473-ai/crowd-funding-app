@@ -147,9 +147,9 @@ function Navbar() {
   // When user is authenticated: Vertical Sidebar Navbar
   return (
     <>
-      {/* Mobile Top Bar for Phone & Tablet (<960px) */}
+      {/* Mobile & Tablet Top Bar (<=1024px) */}
       <div className="navbar-mobile-header">
-        <div className="mobile-header-content">
+        <div className="mobile-header-vertical">
           <button
             className="mobile-menu-trigger"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
