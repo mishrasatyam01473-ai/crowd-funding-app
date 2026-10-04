@@ -1425,85 +1425,98 @@ app.post(
 
 app.get("/api/donations", async (req, res) => {
   try {
-    const { email, donorName } = req.query;
+    const { email } = req.query;
 
-    // Security & Privacy requirement: User can access THEIR OWN donation history only
+    // Strict Security & Privacy Requirement: User can access THEIR OWN donations only
     const queryEmail = (email || "").trim().toLowerCase();
-    const queryName = (donorName || "").trim().toLowerCase();
 
-    if (!queryEmail && !queryName) {
+    if (!queryEmail) {
       return res.status(400).json({
         success: false,
-        message: "Email parameter is required. You can only view your own donation history.",
+        message: "Email parameter is required. You can access your own donation history only.",
         donations: [],
         count: 0,
         totalAmount: 0,
       });
     }
 
-    if (!fs.existsSync(donationExcelFile)) {
-      return res.status(200).json({
-        success: true,
-        source: "DonationData.xlsx",
-        donations: [],
-        count: 0,
-        totalAmount: 0,
-      });
-    }
+    const allRecords = [];
 
-    const workbook = XLSX.readFile(donationExcelFile);
-    const worksheet =
-      workbook.Sheets["Donations"] ||
-      workbook.Sheets[workbook.SheetNames[0]];
+    // 1. Read from DonationData.xlsx if file exists
+    if (fs.existsSync(donationExcelFile)) {
+      try {
+        const workbook = XLSX.readFile(donationExcelFile);
+        const worksheet =
+          workbook.Sheets["Donations"] ||
+          workbook.Sheets[workbook.SheetNames[0]];
 
-    if (!worksheet) {
-      return res.status(200).json({
-        success: true,
-        source: "DonationData.xlsx",
-        donations: [],
-        count: 0,
-        totalAmount: 0,
-      });
-    }
-
-    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-    // Normalize records read directly from DonationData.xlsx
-    const normalized = rows.map((r, idx) => ({
-      donationId: r["Donation ID"] || r.donationId || `DON-${idx}`,
-      campaignId: r["Campaign ID"] || r.campaignId || "",
-      campaignName: r["Campaign Name"] || r.campaignName || "Community Initiative",
-      creatorName: r["Creator Name"] || r["Campaign Creator"] || r.creatorName || "Verified Creator",
-      description: r["Campaign Description"] || r.description || "",
-      donorName: r["Donor Name"] || r.donorName || "Anonymous",
-      donorEmail: r["Donor Email"] || r.donorEmail || "",
-      amount: Number(r["Amount"] || r.amount || 0),
-      currency: r["Currency"] || r.currency || "INR",
-      paymentMethod: r["Mode of Payment"] || r["Payment Method"] || r.paymentMethod || "Razorpay (Online)",
-      razorpayOrderId: r["Razorpay Order ID"] || r.razorpayOrderId || "",
-      razorpayPaymentId: r["Razorpay Payment ID"] || r.razorpayPaymentId || "",
-      paymentStatus: r["Payment Status"] || r.paymentStatus || "SUCCESS",
-      donationDate: r["Date and Time"] || r["Donation Date"] || r.donationDate || "",
-    }));
-
-    // Filter strictly for the requesting user's donations
-    let userDonations = normalized.filter((d) => {
-      const dEmail = (d.donorEmail || "").toLowerCase();
-      const dName = (d.donorName || "").toLowerCase();
-
-      if (queryEmail) {
-        if (dEmail === queryEmail) return true;
-        if (dName === queryEmail) return true;
-        if (queryEmail.includes("@") && dName === queryEmail.split("@")[0]) return true;
+        if (worksheet) {
+          const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+          for (let idx = 0; idx < rows.length; idx++) {
+            const r = rows[idx];
+            allRecords.push({
+              donationId: String(r["Donation ID"] || r.donationId || `DON-${idx}`),
+              campaignId: String(r["Campaign ID"] || r.campaignId || ""),
+              campaignName: String(r["Campaign Name"] || r.campaignName || "Community Initiative"),
+              creatorName: String(r["Creator Name"] || r["Campaign Creator"] || r.creatorName || "Verified Creator"),
+              description: String(r["Campaign Description"] || r.description || ""),
+              donorName: String(r["Donor Name"] || r.donorName || "Anonymous"),
+              donorEmail: String(r["Donor Email"] || r.donorEmail || "").trim().toLowerCase(),
+              amount: Number(r["Amount"] || r.amount || 0),
+              currency: String(r["Currency"] || r.currency || "INR"),
+              paymentMethod: String(r["Mode of Payment"] || r["Payment Method"] || r.paymentMethod || "Razorpay (Online)"),
+              razorpayOrderId: String(r["Razorpay Order ID"] || r.razorpayOrderId || ""),
+              razorpayPaymentId: String(r["Razorpay Payment ID"] || r.razorpayPaymentId || ""),
+              paymentStatus: String(r["Payment Status"] || r.paymentStatus || "SUCCESS"),
+              donationDate: String(r["Date and Time"] || r["Donation Date"] || r.donationDate || ""),
+            });
+          }
+        }
+      } catch (excelErr) {
+        console.warn("Notice reading DonationData.xlsx:", excelErr.message);
       }
-      if (queryName && dName === queryName) {
-        return true;
-      }
-      return false;
-    });
+    }
 
-    // Sort newest first
-    userDonations = userDonations.reverse();
+    // 2. Also retrieve from MongoDB "donations" collection
+    try {
+      const mongoDocs = await Donation.find({
+        donorEmail: { $regex: new RegExp(`^${queryEmail}$`, "i") },
+      }).lean();
+
+      for (const md of mongoDocs) {
+        allRecords.push({
+          donationId: String(md.donationId || md._id),
+          campaignId: String(md.campaignId || ""),
+          campaignName: String(md.campaignName || "Community Initiative"),
+          creatorName: String(md.creatorName || "Verified Creator"),
+          description: String(md.description || ""),
+          donorName: String(md.donorName || "Anonymous"),
+          donorEmail: String(md.donorEmail || "").trim().toLowerCase(),
+          amount: Number(md.amount || 0),
+          currency: String(md.currency || "INR"),
+          paymentMethod: String(md.paymentMethod || "Razorpay (Online)"),
+          razorpayOrderId: String(md.razorpayOrderId || ""),
+          razorpayPaymentId: String(md.razorpayPaymentId || ""),
+          paymentStatus: String(md.paymentStatus || "SUCCESS"),
+          donationDate: String(md.donationDate || (md.createdAt ? new Date(md.createdAt).toLocaleString("en-IN") : "")),
+        });
+      }
+    } catch (mongoErr) {
+      console.warn("Notice reading MongoDB donations:", mongoErr.message);
+    }
+
+    // 3. Deduplicate by donationId to avoid duplicate entries across sources
+    const map = new Map();
+    for (const record of allRecords) {
+      if (record.donationId && !map.has(record.donationId)) {
+        map.set(record.donationId, record);
+      }
+    }
+
+    // 4. STRICT FILTER: Only return donations where donorEmail exactly equals queryEmail
+    const userDonations = Array.from(map.values())
+      .filter((d) => d.donorEmail === queryEmail)
+      .reverse(); // Newest first
 
     const totalAmount = userDonations.reduce(
       (sum, item) => sum + (Number(item.amount) || 0),
@@ -1512,16 +1525,16 @@ app.get("/api/donations", async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      source: "DonationData.xlsx",
       donations: userDonations,
       count: userDonations.length,
       totalAmount,
+      userEmail: queryEmail,
     });
   } catch (error) {
-    console.error("Fetch donations error from DonationData.xlsx:", error);
+    console.error("Fetch donations error:", error);
     return res.status(500).json({
       success: false,
-      message: "Could not fetch donation history from DonationData.xlsx",
+      message: "Could not fetch user donation history",
       error: error.message,
     });
   }

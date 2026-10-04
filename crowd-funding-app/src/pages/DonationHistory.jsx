@@ -18,9 +18,9 @@ const DonationHistory = () => {
 
   // Fetch donation history for the authenticated user only
   const fetchDonations = async (emailToQuery) => {
-    const targetEmail = emailToQuery || currentUser?.mailid;
+    const targetEmail = (emailToQuery || currentUser?.mailid || "").trim().toLowerCase();
     if (!targetEmail) {
-      navigate("/user-login", { replace: true });
+      navigate("/user-login", { replace: true, state: { from: "/donation-history" } });
       return;
     }
 
@@ -28,28 +28,37 @@ const DonationHistory = () => {
       setLoading(true);
       setError("");
 
-      const url = `${API_BASE_URL}/api/donations?email=${encodeURIComponent(targetEmail.trim())}`;
+      const url = `${API_BASE_URL}/api/donations?email=${encodeURIComponent(targetEmail)}`;
       const res = await fetch(url);
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Failed to load donation history.");
+        throw new Error(data.message || "Failed to load your donation history.");
       }
 
-      setDonations(data.donations || []);
-      setTotalAmount(data.totalAmount || 0);
+      // Enforce strict privacy: Only display donations matching the user's exact email address
+      const myDonationsOnly = (data.donations || []).filter(
+        (d) => (d.donorEmail || "").trim().toLowerCase() === targetEmail
+      );
+
+      setDonations(myDonationsOnly);
+      const computedTotal = myDonationsOnly.reduce(
+        (sum, item) => sum + (Number(item.amount) || 0),
+        0
+      );
+      setTotalAmount(computedTotal);
     } catch (err) {
       console.error("Error fetching donations:", err);
-      setError(err.message || "Could not retrieve donation history.");
+      setError(err.message || "Could not retrieve your donation history.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser || !currentUser.mailid) {
       navigate("/user-login", { replace: true, state: { from: "/donation-history" } });
-    } else if (currentUser.mailid) {
+    } else {
       fetchDonations(currentUser.mailid);
     }
   }, [currentUser, navigate]);
@@ -237,7 +246,7 @@ const DonationHistory = () => {
             <p>{error}</p>
             <button
               className="retry-btn"
-              onClick={() => fetchDonations(currentUser?.mailid || lookupEmail)}
+              onClick={() => fetchDonations(currentUser?.mailid)}
             >
               Try Again
             </button>
