@@ -48,61 +48,62 @@ function Navbar() {
         <div className="navbar-brand">
           <button
             className="brand-button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(user ? '/' : '/user-login')}
           >
             Crowd-Fund
           </button>
         </div>
 
 
-        {/* Navigation Menu */}
-        <ul className="navbar-menu">
+        {/* Navigation Menu (Visible only when logged in) */}
+        {user && (
+          <ul className="navbar-menu">
 
-          {/* Home */}
-          <li className="nav-item">
-            <button
-              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-              onClick={() => navigate('/')}
-            >
-              Home
-            </button>
-          </li>
-
-
-          {/* About */}
-          <li className="nav-item">
-            <button
-              className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
-              onClick={() => navigate('/about')}
-            >
-              About
-            </button>
-          </li>
+            {/* Home */}
+            <li className="nav-item">
+              <button
+                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+                onClick={() => navigate('/')}
+              >
+                Home
+              </button>
+            </li>
 
 
-          {/* Create Programme */}
-          <li className="nav-item">
-            <button
-              className={`nav-link ${location.pathname === '/create-programme' ? 'active' : ''}`}
-              onClick={() => navigate('/create-programme')}
-            >
-              Create Programme
-            </button>
-          </li>
+            {/* About */}
+            <li className="nav-item">
+              <button
+                className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
+                onClick={() => navigate('/about')}
+              >
+                About
+              </button>
+            </li>
 
 
-          {/* Query Form */}
-          <li className="nav-item">
-            <button
-              className={`nav-link ${location.pathname === '/query-form' ? 'active' : ''}`}
-              onClick={() => navigate('/query-form')}
-            >
-              Query Form
-            </button>
-          </li>
+            {/* Create Programme */}
+            <li className="nav-item">
+              <button
+                className={`nav-link ${location.pathname === '/create-programme' ? 'active' : ''}`}
+                onClick={() => navigate('/create-programme')}
+              >
+                Create Programme
+              </button>
+            </li>
 
-          {/* Dashboard (Visible once logged in) */}
-          {user && (
+
+            {/* Query Form */}
+            <li className="nav-item">
+              <button
+                className={`nav-link ${location.pathname === '/query-form' ? 'active' : ''}`}
+                onClick={() => navigate('/query-form')}
+              >
+                Query Form
+              </button>
+            </li>
+
+
+            {/* Dashboard */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
@@ -111,10 +112,9 @@ function Navbar() {
                 Dashboard
               </button>
             </li>
-          )}
 
-          {/* Donation History Nav Link (Visible only after login) */}
-          {user && (
+
+            {/* Donation History Nav Link */}
             <li className="nav-item">
               <button
                 className={`nav-link ${location.pathname === '/donation-history' ? 'active' : ''}`}
@@ -123,9 +123,9 @@ function Navbar() {
                 My Donations
               </button>
             </li>
-          )}
 
-        </ul>
+          </ul>
+        )}
 
 
         {/* User Actions */}

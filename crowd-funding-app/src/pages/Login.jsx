@@ -26,9 +26,16 @@ const Login = ({ initialSignUp = false }) => {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
-    // Target route to redirect to after authentication
-    const redirectTarget = location.state?.from || "/dashboard";
-    const wasRedirectedFromProtected = Boolean(location.state?.from);
+    // Target route to redirect to after authentication (default to /dashboard)
+    const redirectTarget = (location.state?.from && location.state.from !== "/" && location.state.from !== "/user-login" && location.state.from !== "/login")
+        ? location.state.from
+        : "/dashboard";
+    const wasRedirectedFromProtected = Boolean(
+        location.state?.from &&
+        location.state.from !== "/" &&
+        location.state.from !== "/user-login" &&
+        location.state.from !== "/login"
+    );
 
     // If user is already logged in, redirect directly to dashboard
     useEffect(() => {
@@ -300,11 +307,6 @@ const Login = ({ initialSignUp = false }) => {
                             </button>
                         </p>
                     )}
-                </div>
-
-                {/* Secondary navigation shortcut */}
-                <div className="auth-sub-footer">
-                    <Link to="/">← Return to Homepage</Link>
                 </div>
 
             </div>
