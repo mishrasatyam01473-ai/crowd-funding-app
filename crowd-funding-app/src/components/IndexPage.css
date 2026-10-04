@@ -260,6 +260,165 @@
   text-align: right;
 }
 
+/* About Section */
+.about-section {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 50% 100%, rgba(22, 135, 255, 0.08), transparent 45%),
+    linear-gradient(180deg, #0b0f14 0%, #0d1218 50%, #0b0f14 100%);
+  padding: 85px 24px 95px;
+  scroll-margin-top: 80px;
+}
+
+.about-container {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.about-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 52px;
+}
+
+.about-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(22, 135, 255, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.about-title {
+  margin: 0 0 16px;
+  color: #ffffff;
+  font-size: clamp(1.9rem, 3.5vw, 2.7rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.about-subtitle {
+  margin: 0 auto;
+  color: #aab5c4;
+  font-size: clamp(0.96rem, 1.8vw, 1.12rem);
+  line-height: 1.7;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 50px;
+}
+
+.about-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #151b23, #10151c);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.38);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+}
+
+.about-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.about-icon-box.emergency {
+  background: rgba(255, 71, 87, 0.15);
+  border: 1px solid rgba(255, 71, 87, 0.35);
+  color: #ff6b81;
+}
+
+.about-icon-box.shield {
+  background: rgba(40, 209, 124, 0.15);
+  border: 1px solid rgba(40, 209, 124, 0.35);
+  color: #2ed573;
+}
+
+.about-icon-box.zap {
+  background: rgba(255, 177, 66, 0.15);
+  border: 1px solid rgba(255, 177, 66, 0.35);
+  color: #ffa502;
+}
+
+.about-icon-box.heart {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+.about-card h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.about-card p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.about-stats-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 30px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+}
+
+.about-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.about-stat-num {
+  color: #38bdf8;
+  font-size: clamp(2rem, 3.5vw, 2.7rem);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.about-stat-label {
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 1024px) {
   .hero-section {
@@ -274,6 +433,11 @@
   .campaign-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px;
+  }
+
+  .about-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
   }
 }
 
@@ -354,6 +518,30 @@
   .stat-label {
     font-size: 0.64rem;
   }
+
+  .about-section {
+    padding: 60px 18px 70px;
+  }
+
+  .about-header {
+    margin-bottom: 36px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .about-card:hover {
+    transform: none;
+  }
+
+  .about-stats-strip {
+    flex-direction: column;
+    gap: 22px;
+    padding: 24px 16px;
+  }
 }
 
 @media (max-width: 380px) {
@@ -384,6 +572,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .campaign-card,
+  .about-card,
   .btn-primary,
   .btn-secondary,
   .progress-bar-fill {

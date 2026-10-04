@@ -27,13 +27,35 @@ function Navbar() {
     navigate('/user-login');
   };
 
+  const handleHomeClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/', { replace: true });
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleAboutClick = () => {
+    if (location.pathname === '/') {
+      const el = document.getElementById('about');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+      navigate('/#about', { replace: true });
+    } else {
+      navigate('/#about');
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
           <button
             className="brand-button"
-            onClick={() => navigate(user ? '/' : '/user-login')}
+            onClick={handleHomeClick}
+            title="Crowd-Fund Home"
           >
             Crowd-Fund
           </button>
@@ -43,16 +65,16 @@ function Navbar() {
           <ul className="navbar-menu">
             <li className="nav-item">
               <button
-                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                onClick={() => navigate('/')}
+                className={`nav-link ${location.pathname === '/' && !location.hash ? 'active' : ''}`}
+                onClick={handleHomeClick}
               >
                 Home
               </button>
             </li>
             <li className="nav-item">
               <button
-                className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
-                onClick={() => navigate('/about')}
+                className={`nav-link ${location.hash === '#about' ? 'active' : ''}`}
+                onClick={handleAboutClick}
               >
                 About
               </button>
@@ -95,16 +117,12 @@ function Navbar() {
         <div className="navbar-actions">
           {user ? (
             <div className="user-action-group">
-              <button
-                className="btn-history"
-                onClick={() => navigate('/donation-history')}
-                title="View your donation history"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ marginRight: '5px' }}>
-                  <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                My Donations
-              </button>
+              <span className="user-identity-badge" title={user.mailid || user.name}>
+                <span className="user-status-dot" />
+                <span className="user-name-text">
+                  {user.name || user.mailid?.split('@')[0] || 'User'}
+                </span>
+              </span>
 
               <button
                 className="btn-logout"

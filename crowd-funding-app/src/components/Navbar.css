@@ -5,21 +5,21 @@
   z-index: 1000;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(17, 22, 29, 0.88);
+  background: rgba(17, 22, 29, 0.92);
   color: #ffffff;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .navbar-container {
   display: flex;
-  width: min(1240px, 100%);
+  width: min(1280px, 100%);
   min-height: 70px;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -27,6 +27,8 @@
 /* Brand & Logo */
 .navbar-brand {
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .brand-button {
@@ -47,43 +49,49 @@
 
 .brand-button::before {
   content: "";
-  width: 9px;
-  height: 9px;
-  margin-right: 9px;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
   border-radius: 50%;
   background: #1687ff;
   box-shadow: 0 0 14px rgba(22, 135, 255, 0.7);
 }
 
 .brand-button:hover {
-  color: #ffffff;
+  color: #38bdf8;
   transform: translateY(-1px);
 }
 
-/* Navigation Links */
+/* Navigation Links (Centered & Aligned) */
 .navbar-menu {
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
 }
 
 .nav-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  padding: 8px 13px;
+  height: 38px;
+  padding: 0 14px;
   border: none;
-  border-radius: 9px;
+  border-radius: 8px;
   background: transparent;
   color: #b9c2cf;
   text-decoration: none;
   font-family: inherit;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -94,7 +102,7 @@
 
 .nav-link:hover,
 .nav-link:focus-visible {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   outline: none;
   transform: translateY(-1px);
@@ -106,31 +114,97 @@
 
 .nav-link.active {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* User Actions */
+/* User Actions (Right Side) */
 .navbar-actions {
-  display: flex;
   flex: 0 0 auto;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .user-action-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+.user-identity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 170px;
+}
+
+.user-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+  flex-shrink: 0;
+}
+
+.user-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  display: inline-flex;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 71, 87, 0.45);
+  border-radius: 8px;
+  background: rgba(255, 71, 87, 0.12);
+  color: #ff7d89;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover,
+.btn-logout:focus-visible {
+  border-color: #ff4757;
+  background: #ff4757;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 71, 87, 0.35);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.btn-logout:active {
+  transform: translateY(0);
 }
 
 .btn-user {
   display: inline-flex;
-  min-height: 42px;
+  height: 38px;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
+  padding: 0 16px;
   border: 1px solid rgba(255, 71, 87, 0.65);
-  border-radius: 9px;
+  border-radius: 8px;
   background: rgba(255, 71, 87, 0.06);
   color: #ff7d89;
   font-family: inherit;
@@ -152,18 +226,14 @@
   transform: translateY(-1px);
 }
 
-.btn-user:active {
-  transform: translateY(0);
-}
-
 .btn-signup {
   display: inline-flex;
-  min-height: 42px;
+  height: 38px;
   align-items: center;
   justify-content: center;
-  padding: 8px 18px;
+  padding: 0 18px;
   border: 1px solid #1687ff;
-  border-radius: 9px;
+  border-radius: 8px;
   background: linear-gradient(135deg, #007bff, #0056b3);
   color: #ffffff;
   font-family: inherit;
@@ -186,108 +256,37 @@
   outline: none;
 }
 
-.btn-signup:active {
-  transform: translateY(0);
-}
-
-.btn-logout {
-  display: inline-flex;
-  min-height: 42px;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 18px;
-  border: 1px solid rgba(255, 71, 87, 0.85);
-  border-radius: 9px;
-  background: #ff4757;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  box-shadow: 0 4px 14px rgba(255, 71, 87, 0.28);
-  transition: all 0.2s ease;
-}
-
-.btn-logout:hover,
-.btn-logout:focus-visible {
-  border-color: #ff6b81;
-  background: #ee3546;
-  box-shadow: 0 6px 18px rgba(255, 71, 87, 0.42);
-  transform: translateY(-1px);
-  outline: none;
-}
-
-.btn-logout:active {
-  transform: translateY(0);
-}
-
-.btn-history {
-  display: inline-flex;
-  min-height: 42px;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  border-radius: 9px;
-  background: rgba(56, 189, 248, 0.08);
-  color: #38bdf8;
-  font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  transition: all 0.2s ease;
-}
-
-.btn-history:hover,
-.btn-history:focus-visible {
-  border-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.2);
-  color: #ffffff;
-  transform: translateY(-1px);
-  outline: none;
-}
-
-.btn-history:active {
-  transform: translateY(0);
-}
-
 /* Responsive Media Queries */
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .navbar-container {
-    gap: 12px;
-    padding-inline: 18px;
+    gap: 14px;
+    padding: 0 16px;
   }
 
   .navbar-menu {
-    gap: 2px;
+    gap: 4px;
   }
 
   .nav-link {
-    padding-inline: 9px;
-    font-size: 0.86rem;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 0.85rem;
   }
 
-  .btn-user,
-  .btn-signup {
-    padding-inline: 12px;
+  .user-identity-badge {
+    display: none;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 720px) {
   .navbar-container {
-    min-height: 64px;
+    min-height: 62px;
     gap: 10px;
     padding: 0 12px;
   }
 
   .brand-button {
-    font-size: 1.18rem;
+    font-size: 1.2rem;
   }
 
   .brand-button::before {
@@ -302,6 +301,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    gap: 4px;
   }
 
   .navbar-menu::-webkit-scrollbar {
@@ -309,28 +309,23 @@
   }
 
   .nav-link {
-    min-height: 38px;
-    padding: 7px 9px;
+    height: 34px;
+    padding: 0 8px;
     font-size: 0.78rem;
   }
 
   .btn-user,
-  .btn-logout,
-  .btn-history {
-    min-height: 38px;
-    padding: 7px 10px;
-    font-size: 0.76rem;
+  .btn-signup,
+  .btn-logout {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 0.78rem;
   }
 }
 
-@media (max-width: 420px) {
-  .navbar-container {
-    gap: 7px;
-    padding-inline: 9px;
-  }
-
+@media (max-width: 440px) {
   .brand-button {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 
   .brand-button::before {
@@ -338,21 +333,16 @@
   }
 
   .nav-link {
-    padding-inline: 7px;
+    padding: 0 7px;
     font-size: 0.74rem;
-  }
-
-  .btn-user,
-  .btn-logout,
-  .btn-history {
-    padding-inline: 8px;
-    font-size: 0.72rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .nav-link,
   .btn-user,
+  .btn-signup,
+  .btn-logout,
   .brand-button {
     transition: none;
   }

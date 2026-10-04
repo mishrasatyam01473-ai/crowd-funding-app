@@ -109,6 +109,14 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <Navigate to="/#about" replace />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Fallback to login */}
         <Route path="*" element={<Navigate to="/user-login" replace />} />
