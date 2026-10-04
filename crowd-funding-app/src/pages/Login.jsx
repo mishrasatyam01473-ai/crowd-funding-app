@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams, Link } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { setAuthUser } from "../utils/auth.js";
 import "./Login.css";
 
 const Login = ({ initialSignUp = false }) => {
@@ -37,20 +38,8 @@ const Login = ({ initialSignUp = false }) => {
         location.state.from !== "/login"
     );
 
-    // If user is already logged in, redirect directly to dashboard
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            try {
-                const parsed = JSON.parse(storedUser);
-                if (parsed && (parsed.id || parsed.mailid)) {
-                    navigate("/dashboard", { replace: true });
-                }
-            } catch {
-                // Invalid user entry in localStorage, let them log in
-            }
-        }
-    }, [navigate]);
+    // Note: We do NOT auto-login or auto-redirect from localStorage on mount.
+    // The user must explicitly enter their credentials to log in.
 
     // Handle switching between Sign In and Sign Up tabs
     const handleModeSwitch = (signUpMode) => {
@@ -119,10 +108,9 @@ const Login = ({ initialSignUp = false }) => {
                     : "Login successful! Redirecting to your dashboard..."
             );
 
-            // Persist authenticated user and dispatch event for Navbar/App sync
+            // Save authenticated user for the active session (not persisted in localStorage)
             if (data.user) {
-                localStorage.setItem("user", JSON.stringify(data.user));
-                window.dispatchEvent(new Event("authChange"));
+                setAuthUser(data.user);
             }
 
             // Redirect smoothly to destination (or /dashboard)

@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { getAuthUser } from "../utils/auth.js";
 import "./DonationHistory.css";
 
 const DonationHistory = () => {
   const navigate = useNavigate();
 
-  // Load user synchronously from localStorage on initial render
-  const [currentUser] = useState(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const u = JSON.parse(stored);
-        return u && (u.id || u.mailid) ? u : null;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
+  // Load user synchronously from active session
+  const [currentUser] = useState(() => getAuthUser());
 
   const [donations, setDonations] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);

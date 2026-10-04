@@ -1,25 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getAuthUser, clearAuthUser } from '../utils/auth.js';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => getAuthUser());
 
   // Sync logged in user state on mount, navigation, and custom auth events
   useEffect(() => {
     const syncUser = () => {
-      const stored = localStorage.getItem('user');
-      if (stored) {
-        try {
-          setUser(JSON.parse(stored));
-        } catch {
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
+      setUser(getAuthUser());
     };
 
     syncUser();
@@ -34,9 +26,8 @@ function Navbar() {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    clearAuthUser();
     setUser(null);
-    window.dispatchEvent(new Event('authChange'));
     navigate('/user-login');
   };
 

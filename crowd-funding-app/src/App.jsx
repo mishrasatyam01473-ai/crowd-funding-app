@@ -10,17 +10,10 @@ import Dashboard from './pages/Dashboard.jsx'
 import DonationForm from './pages/DonationForm.jsx'
 import DonationHistory from './pages/DonationHistory.jsx'
 
-// Helper to retrieve and validate the stored authenticated user
-export function getStoredUser() {
-  const storedUser = localStorage.getItem('user');
-  if (!storedUser) return null;
-  try {
-    const parsed = JSON.parse(storedUser);
-    return parsed && (parsed.id || parsed.mailid) ? parsed : null;
-  } catch {
-    return null;
-  }
-}
+import { getAuthUser } from './utils/auth.js'
+
+// Export getStoredUser as an alias to getAuthUser for compatibility
+export const getStoredUser = getAuthUser;
 
 // Protected Route Component: Restricts access so unauthenticated visitors cannot access any page
 function ProtectedRoute({ children }) {

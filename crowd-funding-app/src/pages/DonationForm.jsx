@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { getAuthUser } from "../utils/auth.js";
 import "./DonationForm.css";
 
 const PRESET_AMOUNTS = [250, 500, 1000, 2500, 5000];
@@ -30,16 +31,11 @@ const DonationForm = () => {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Pre-fill user information if logged in
+  // Pre-fill user information if logged in in current session
   React.useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const u = JSON.parse(stored);
-        if (u.mailid) setDonorEmail(u.mailid);
-      } catch (err) {
-        console.error("Session parse error:", err);
-      }
+    const user = getAuthUser();
+    if (user && user.mailid) {
+      setDonorEmail(user.mailid);
     }
   }, []);
 

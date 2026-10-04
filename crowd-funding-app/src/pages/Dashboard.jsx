@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { getAuthUser, clearAuthUser } from "../utils/auth.js";
 import "./Dashboard.css";
 
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    // Check auth synchronously on initial mount
-    const [user, setUser] = useState(() => {
-        const stored = localStorage.getItem("user");
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                return parsed && (parsed.id || parsed.mailid) ? parsed : null;
-            } catch {
-                return null;
-            }
-        }
-        return null;
-    });
+    // Check auth synchronously on initial mount from active session
+    const [user, setUser] = useState(() => getAuthUser());
 
     const [campaign, setCampaign] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -28,26 +18,13 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 // ==========================================
-                // GET USER FROM LOCAL STORAGE
+                // GET ACTIVE SESSION USER
                 // ==========================================
 
-                const storedUser = localStorage.getItem("user");
+                const activeUser = getAuthUser();
 
-                if (!storedUser) {
-                    navigate("/user-login", { replace: true });
-                    return;
-                }
-
-                let parsedUser = null;
-                try {
-                    parsedUser = JSON.parse(storedUser);
-                } catch {
-                    parsedUser = null;
-                }
-
-                if (!parsedUser || (!parsedUser.id && !parsedUser.mailid)) {
-                    localStorage.removeItem("user");
-                    window.dispatchEvent(new Event("authChange"));
+                if (!activeUser || (!activeUser.id && !activeUser.mailid)) {
+                    clearAuthUser();
                     navigate("/user-login", { replace: true });
                     return;
                 }
@@ -56,7 +33,7 @@ const Dashboard = () => {
                 // FETCH USER + CAMPAIGN
                 // ==========================================
 
-                const identifier = parsedUser.id || parsedUser.mailid;
+                const identifier = activeUser.id || activeUser.mailid;
                 const response = await fetch(
                     `${API_BASE_URL}/api/user/${identifier}`
                 );
@@ -95,8 +72,7 @@ const Dashboard = () => {
     // ==========================================
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
-        window.dispatchEvent(new Event("authChange"));
+        clearAuthUser();
         navigate("/user-login");
     };
 
@@ -129,8 +105,7 @@ const Dashboard = () => {
                 <p>{error}</p>
 
                 <button onClick={() => {
-                    localStorage.removeItem("user");
-                    window.dispatchEvent(new Event("authChange"));
+                    clearAuthUser();
                     navigate("/user-login");
                 }}>
                     Go to Login
