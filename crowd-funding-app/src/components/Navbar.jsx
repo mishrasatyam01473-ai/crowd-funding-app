@@ -149,7 +149,7 @@ function Navbar() {
     <>
       {/* Mobile & Tablet Top Bar (<=1024px) */}
       <div className="navbar-mobile-header">
-        <div className="mobile-header-vertical">
+        <div className="mobile-header-row">
           <button
             className="mobile-menu-trigger"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
