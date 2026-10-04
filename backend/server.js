@@ -81,7 +81,8 @@ mongoose
 
 
 // ==========================================
-// CAMPAIGNS SCHEMA
+// CAMPAIGNS SCHEMA & MODEL
+// Explicitly stores campaign data in the "campaigns" collection
 // ==========================================
 
 const campaignSchema = new mongoose.Schema(
@@ -89,77 +90,7 @@ const campaignSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-    },
-
-    description: {
-      type: String,
-      required: true,
-    },
-
-    goal: {
-      type: Number,
-      required: true,
-    },
-
-    creator: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    collection: "campaigns",
-  }
-);
-
-
-// ==========================================
-// CAMPAIGNS MODEL
-// ==========================================
-
-const Campaign = mongoose.model(
-  "Campaign",
-  campaignSchema
-);
-
-
-// ==========================================
-// GET CAMPAIGNS
-// ==========================================
-
-app.get("/api/campaigns", async (req, res) => {
-
-  try {
-
-    const campaigns = await Campaign.find({});
-
-    console.log("Campaigns fetched:");
-
-    res.status(200).json(campaigns);
-
-  } catch (error) {
-
-    console.error("Error fetching campaigns:", error);
-
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-    });
-
-  }
-
-});
-
-
-// ==========================================
-// CAMPAIGN REGISTRATION SCHEMA
-// This collection will NOT store mailid/passcode
-// ==========================================
-
-const RegistrationSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
+      trim: true,
     },
 
     description: {
@@ -170,6 +101,7 @@ const RegistrationSchema = new mongoose.Schema(
     mailid: {
       type: String,
       required: true,
+      trim: true,
     },
 
     goal: {
@@ -180,6 +112,7 @@ const RegistrationSchema = new mongoose.Schema(
     creator: {
       type: String,
       required: true,
+      trim: true,
     },
 
     raised: {
@@ -194,18 +127,15 @@ const RegistrationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "campaignRegistration",
+    collection: "campaigns",
   }
 );
 
-// ==========================================
-// CAMPAIGN MODEL
-// ==========================================
+// Primary Campaign Model targeting "campaigns" collection
+const Campaign = mongoose.model("Campaign", campaignSchema);
 
-const CampaignRegistration = mongoose.model(
-  "CampaignRegistration",
-  RegistrationSchema
-);
+// Backward-compatible alias ensuring any existing references target the "campaigns" collection
+const CampaignRegistration = Campaign;
 
 // ==========================================
 // LOGIN DATA SCHEMA
@@ -315,13 +245,14 @@ const Donation = mongoose.model("Donation", DonationSchema);
 
 // ==========================================
 // GET CAMPAIGNS
+// Fetches all campaigns stored in the "campaigns" collection
 // ==========================================
 
 app.get("/api/campaigns", async (req, res) => {
   try {
-    const campaigns = await CampaignRegistration.find({});
+    const campaigns = await Campaign.find({}).sort({ createdAt: -1 });
 
-    console.log("Campaigns fetched successfully");
+    console.log(`Campaigns fetched successfully (${campaigns.length} total)`);
 
     res.status(200).json(campaigns);
   } catch (error) {
@@ -335,13 +266,15 @@ app.get("/api/campaigns", async (req, res) => {
 });
 
 // ==========================================
-// CREATE CAMPAIGN
+// CREATE CAMPAIGN HANDLER
+// Stores new campaign into "campaigns" collection
+// and user credentials into "LoginData" collection
 // ==========================================
 
-app.post("/api/campaignRegistration", async (req, res) => {
+const handleCampaignRegistration = async (req, res) => {
   try {
     console.log("================================");
-    console.log("Data received from React:");
+    console.log("Campaign registration data received:");
     console.log(req.body);
     console.log("================================");
 
@@ -360,19 +293,19 @@ app.post("/api/campaignRegistration", async (req, res) => {
     // VALIDATION
     // ==========================================
 
-    if (!title) {
+    if (!title || !title.trim()) {
       return res.status(400).json({
         message: "Title required",
       });
     }
 
-    if (!description) {
+    if (!description || !description.trim()) {
       return res.status(400).json({
         message: "Description required",
       });
     }
 
-    if (!mailid) {
+    if (!mailid || !mailid.trim()) {
       return res.status(400).json({
         message: "Email required",
       });
@@ -384,13 +317,13 @@ app.post("/api/campaignRegistration", async (req, res) => {
       });
     }
 
-    if (!goal) {
+    if (!goal || isNaN(goal)) {
       return res.status(400).json({
-        message: "Goal required",
+        message: "Valid goal amount required",
       });
     }
 
-    if (!creator) {
+    if (!creator || !creator.trim()) {
       return res.status(400).json({
         message: "Creator required",
       });
@@ -401,7 +334,7 @@ app.post("/api/campaignRegistration", async (req, res) => {
     // ==========================================
 
     const existingLogin = await LoginData.findOne({
-      mailid: mailid,
+      mailid: mailid.trim(),
     });
 
     if (existingLogin) {
@@ -411,23 +344,22 @@ app.post("/api/campaignRegistration", async (req, res) => {
     }
 
     // ==========================================
-    // SAVE CAMPAIGN DATA
-    // WITHOUT EMAIL AND PASSCODE
+    // SAVE CAMPAIGN DATA DIRECTLY TO "campaigns" COLLECTION
     // ==========================================
 
-    const newCampaign = new CampaignRegistration({
-      title: title,
-      description: description,
-      mailid: mailid,
+    const newCampaign = new Campaign({
+      title: title.trim(),
+      description: description.trim(),
+      mailid: mailid.trim(),
       goal: Number(goal),
-      creator: creator,
+      creator: creator.trim(),
       raised: 0,
-      image: image || "",
+      image: image ? image.trim() : "",
     });
 
     const savedCampaign = await newCampaign.save();
 
-    console.log("Campaign saved successfully:");
+    console.log("Campaign saved successfully into MongoDB 'campaigns' collection:");
     console.log(savedCampaign);
 
     // ==========================================
@@ -436,7 +368,7 @@ app.post("/api/campaignRegistration", async (req, res) => {
     // ==========================================
 
     const newLoginData = new LoginData({
-      mailid: mailid,
+      mailid: mailid.trim(),
       passcode: passcode,
     });
 
@@ -449,9 +381,7 @@ app.post("/api/campaignRegistration", async (req, res) => {
 
     res.status(201).json({
       message: "Campaign and login data created successfully",
-
       campaign: savedCampaign,
-
       login: {
         id: savedLoginData._id,
         mailid: savedLoginData.mailid,
@@ -469,7 +399,10 @@ app.post("/api/campaignRegistration", async (req, res) => {
       error: error.message,
     });
   }
-});
+};
+
+app.post("/api/campaignRegistration", handleCampaignRegistration);
+app.post("/api/campaigns", handleCampaignRegistration);
 
 // ========================================== LOGIN API ==========================================
 
@@ -546,8 +479,8 @@ app.get("/api/user/:identifier", async (req, res) => {
       });
     }
 
-    // Find campaign associated with this user's mailid
-    const campaign = await CampaignRegistration.findOne({
+    // Find campaign associated with this user's mailid from "campaigns" collection
+    const campaign = await Campaign.findOne({
       mailid: user.mailid,
     });
 
@@ -1156,9 +1089,9 @@ app.post(
         console.error("MongoDB donation save warning:", mongoErr.message);
       }
 
-      // Update campaign raised total if valid campaignId
+      // Update campaign raised total in "campaigns" collection if valid campaignId
       if (campaignId && mongoose.Types.ObjectId.isValid(campaignId)) {
-        await CampaignRegistration.findByIdAndUpdate(campaignId, {
+        await Campaign.findByIdAndUpdate(campaignId, {
           $inc: { raised: Number(amount) },
         }).catch((err) => console.warn("Notice updating campaign raised:", err.message));
       }
