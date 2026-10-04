@@ -8,192 +8,293 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
-    background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.15), transparent 40%), #0b0f14;
+    padding: 60px 20px;
+    background: radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.18), transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(255, 71, 87, 0.08), transparent 40%),
+                #0b0f14;
     color: #ffffff;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ========================================================= LOGIN CARD ========================================================= */
 .login-card {
     width: 100%;
-    max-width: 420px;
-    padding: 40px;
-    background: linear-gradient(180deg, #151b23, #11161d);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 18px;
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+    max-width: 440px;
+    padding: 38px 36px;
+    background: linear-gradient(180deg, #161c24 0%, #11161d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .login-card:hover {
-    transform: translateY(-4px);
     border-color: rgba(77, 163, 255, 0.35);
-    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65),
+                0 0 24px rgba(0, 123, 255, 0.1);
+}
+
+/* ========================================================= AUTH ALERT NOTICE ========================================================= */
+.auth-alert-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 22px;
+    background: rgba(255, 171, 0, 0.1);
+    border: 1px solid rgba(255, 171, 0, 0.3);
+    border-radius: 10px;
+    color: #ffd166;
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.auth-alert-notice svg {
+    flex-shrink: 0;
+    color: #ffd166;
+}
+
+/* ========================================================= TAB SWITCHER ========================================================= */
+.auth-tab-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 5px;
+    margin-bottom: 26px;
+    background: rgba(10, 14, 20, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+}
+
+.auth-tab-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #8c9ba8;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auth-tab-btn:hover {
+    color: #ffffff;
+}
+
+.auth-tab-btn.active {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 123, 255, 0.35);
 }
 
 /* ========================================================= HEADING ========================================================= */
-.login-card h1 {
-    margin: 0 0 10px;
+.auth-header {
     text-align: center;
-    color: #ffffff;
-    font-size: 2rem;
-    line-height: 1.2;
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    margin-bottom: 24px;
 }
 
-/* ========================================================= SUBTITLE ========================================================= */
+.auth-header h1 {
+    margin: 0 0 8px;
+    color: #ffffff;
+    font-size: 1.85rem;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
 .login-subtitle {
-    margin: 0 0 30px;
-    text-align: center;
-    color: #aab4c0;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    margin: 0;
+    color: #9aa8b6;
+    font-size: 0.92rem;
+    line-height: 1.5;
 }
 
 /* ========================================================= FORM GROUP ========================================================= */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
-/* LABEL */
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     color: #dce3eb;
-    font-size: 0.9rem;
-    font-weight: 650;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.label-row label {
+    margin-bottom: 0;
+}
+
+.optional-tag {
+    color: #7b8895;
+    font-weight: 400;
+    font-size: 0.8rem;
+    margin-left: 4px;
+}
+
+.toggle-passcode-btn {
+    background: none;
+    border: none;
+    color: #4da3ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+
+.toggle-passcode-btn:hover {
+    color: #8bc5ff;
+    text-decoration: underline;
 }
 
 /* ========================================================= INPUT ========================================================= */
 .form-group input {
     width: 100%;
-    padding: 13px 14px;
+    padding: 12px 14px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     outline: none;
     background: #0f141b;
     color: #ffffff;
     font-family: inherit;
-    font-size: 0.98rem;
+    font-size: 0.95rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-/* INPUT PLACEHOLDER */
 .form-group input::placeholder {
-    color: #6f7b89;
+    color: #5c6875;
 }
 
-/* INPUT FOCUS */
 .form-group input:focus {
     border-color: #1687ff;
-    background: #111820;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12), 0 0 18px rgba(0, 123, 255, 0.08);
+    background: #111822;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15), 0 0 16px rgba(0, 123, 255, 0.1);
 }
 
-/* ========================================================= LOGIN BUTTON ========================================================= */
+/* ========================================================= SUBMIT BUTTON ========================================================= */
 .login-button {
     width: 100%;
-    min-height: 50px;
-    margin-top: 5px;
+    min-height: 48px;
+    margin-top: 10px;
     padding: 12px 20px;
     border: 1px solid #1687ff;
     border-radius: 10px;
-    background: linear-gradient(135deg, #007bff, #0062d6);
+    background: linear-gradient(135deg, #007bff, #005ec4);
     color: #ffffff;
     font-family: inherit;
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 10px 28px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 10px 24px rgba(0, 123, 255, 0.25);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-/* BUTTON HOVER */
-.login-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 35px rgba(0, 123, 255, 0.35);
+.login-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(0, 123, 255, 0.38);
 }
 
-/* BUTTON ACTIVE */
-.login-button:active {
-    transform: translateY(-1px);
+.login-button:active:not(:disabled) {
+    transform: translateY(0);
 }
 
-/* DISABLED BUTTON */
 .login-button:disabled {
-    background: #28313c;
-    border-color: #3a4653;
-    color: #788493;
+    background: #232c37;
+    border-color: #323d4b;
+    color: #6d7b8a;
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
 }
 
-/* ========================================================= SUCCESS MESSAGE ========================================================= */
+/* ========================================================= SUCCESS & ERROR MESSAGES ========================================================= */
 .success-message {
-    padding: 12px 14px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(40, 209, 124, 0.25);
+    padding: 11px 14px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(40, 209, 124, 0.3);
     border-radius: 10px;
-    background: rgba(40, 209, 124, 0.08);
-    color: #28d17c;
+    background: rgba(40, 209, 124, 0.1);
+    color: #2ed573;
     text-align: center;
     font-size: 0.88rem;
-    line-height: 1.5;
+    line-height: 1.45;
 }
 
-/* ========================================================= ERROR MESSAGE ========================================================= */
 .error-message {
-    padding: 12px 14px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 71, 87, 0.3);
+    padding: 11px 14px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(255, 71, 87, 0.35);
     border-radius: 10px;
-    background: rgba(255, 71, 87, 0.08);
-    color: #ff9ba5;
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff7675;
     text-align: center;
     font-size: 0.88rem;
-    line-height: 1.5;
+    line-height: 1.45;
 }
 
-/* ========================================================= OPTIONAL LINKS If your Login.jsx contains links such as "Create Account" or "Forgot Password" ========================================================= */
-.login-card a {
+/* ========================================================= FOOTER ========================================================= */
+.auth-footer {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 0.88rem;
+    color: #8c9ba8;
+}
+
+.auth-footer p {
+    margin: 0;
+}
+
+.auth-toggle-link {
+    background: none;
+    border: none;
     color: #4da3ff;
-    text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
     transition: color 0.2s ease;
 }
 
-.login-card a:hover {
+.auth-toggle-link:hover {
     color: #8bc5ff;
     text-decoration: underline;
 }
 
-/* ========================================================= OPTIONAL REGISTER TEXT ========================================================= */
-.login-register {
-    margin-top: 22px;
-    color: #788493;
+.auth-sub-footer {
+    margin-top: 18px;
     text-align: center;
-    font-size: 0.88rem;
 }
 
-/* ========================================================= RESPONSIVE - TABLET ========================================================= */
-@media (max-width: 768px) {
-    .login-page {
-        padding: 30px 18px;
-    }
-
-    .login-card {
-        max-width: 420px;
-        padding: 35px 30px;
-    }
+.auth-sub-footer a {
+    color: #677584;
+    font-size: 0.84rem;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-/* ========================================================= RESPONSIVE - MOBILE ========================================================= */
+.auth-sub-footer a:hover {
+    color: #a0b0c0;
+}
+
+/* ========================================================= RESPONSIVE ========================================================= */
 @media (max-width: 500px) {
     .login-page {
-        padding: 20px 15px;
+        padding: 30px 16px;
     }
 
     .login-card {
@@ -201,51 +302,21 @@
         border-radius: 16px;
     }
 
-    .login-card:hover {
-        transform: none;
-    }
-
-    .login-card h1 {
-        font-size: 1.75rem;
-    }
-
-    .login-subtitle {
-        margin-bottom: 25px;
-        font-size: 0.9rem;
-    }
-
-    .form-group input {
-        padding: 12px 13px;
-        font-size: 0.95rem;
-    }
-
-    .login-button {
-        min-height: 48px;
-        font-size: 0.95rem;
-    }
-}
-
-/* ========================================================= SMALL PHONES ========================================================= */
-@media (max-width: 380px) {
-    .login-card {
-        padding: 24px 18px;
-    }
-
-    .login-card h1 {
+    .auth-header h1 {
         font-size: 1.6rem;
     }
 
     .login-subtitle {
         font-size: 0.86rem;
     }
-}
 
-/* ========================================================= REDUCED MOTION ========================================================= */
-@media (prefers-reduced-motion: reduce) {
-
-    .login-card,
-    .login-button,
     .form-group input {
-        transition: none;
+        padding: 11px 12px;
+        font-size: 0.92rem;
+    }
+
+    .login-button {
+        min-height: 46px;
+        font-size: 0.92rem;
     }
 }

@@ -286,6 +286,41 @@
   transform: translateY(0);
 }
 
+/* User Sign Up Button */
+.btn-signup {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border: 1px solid #1687ff;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: 0 4px 14px rgba(0, 123, 255, 0.28);
+  transition: all 0.2s ease;
+}
+
+.btn-signup:hover,
+.btn-signup:focus-visible {
+  border-color: #3898ff;
+  background: linear-gradient(135deg, #1687ff, #0066d6);
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.42);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.btn-signup:active {
+  transform: translateY(0);
+}
+
 
 /* =========================================================
    USER ACTION GROUP & LOGOUT BUTTON
@@ -396,7 +431,8 @@
   }
 
 
-  .btn-user {
+  .btn-user,
+  .btn-signup {
     padding-inline: 12px;
   }
 }

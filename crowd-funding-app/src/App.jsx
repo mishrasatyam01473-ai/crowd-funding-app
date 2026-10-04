@@ -47,6 +47,8 @@ function App() {
           <Route path="/query-form" element={<QueryForm />} />
           <Route path="/user-login" element={<Login />} />
           <Route path="/login" element={<Navigate to="/user-login" replace />} />
+          <Route path="/signup" element={<Login initialSignUp={true} />} />
+          <Route path="/register" element={<Login initialSignUp={true} />} />
           <Route
             path="/dashboard"
             element={

@@ -144,6 +144,12 @@ const CampaignRegistration = Campaign;
 
 const LoginDataSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     mailid: {
       type: String,
       required: true,
@@ -364,10 +370,10 @@ const handleCampaignRegistration = async (req, res) => {
 
     // ==========================================
     // SAVE LOGIN DATA
-    // ONLY EMAIL AND PASSCODE
     // ==========================================
 
     const newLoginData = new LoginData({
+      name: creator ? creator.trim() : "",
       mailid: mailid.trim(),
       passcode: passcode,
     });
@@ -385,6 +391,7 @@ const handleCampaignRegistration = async (req, res) => {
       login: {
         id: savedLoginData._id,
         mailid: savedLoginData.mailid,
+        name: savedLoginData.name || "",
       },
     });
 
@@ -404,6 +411,96 @@ const handleCampaignRegistration = async (req, res) => {
 app.post("/api/campaignRegistration", handleCampaignRegistration);
 app.post("/api/campaigns", handleCampaignRegistration);
 
+// ==========================================
+// SIGNUP / REGISTRATION API
+// Creates an account directly without requiring a campaign
+// ==========================================
+
+const handleSignup = async (req, res) => {
+  try {
+    const { name, mailid, passcode } = req.body;
+
+    console.log("Signup attempt for email:", mailid);
+
+    // Validate inputs
+    if (!mailid || !passcode) {
+      return res.status(400).json({
+        message: "Email and passcode are required",
+      });
+    }
+
+    const trimmedEmail = mailid.trim().toLowerCase();
+    const trimmedPasscode = String(passcode).trim();
+    const trimmedName = (name || "").trim();
+
+    // Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address",
+      });
+    }
+
+    if (trimmedPasscode.length < 4) {
+      return res.status(400).json({
+        message: "Passcode must be at least 4 characters long",
+      });
+    }
+
+    // Check if an account with this email already exists
+    const existingUser = await LoginData.findOne({
+      $or: [
+        { mailid: trimmedEmail },
+        { mailid: { $regex: new RegExp(`^${mailid.trim()}$`, "i") } },
+      ],
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "An account with this email already exists. Please log in instead.",
+      });
+    }
+
+    // Create and save new user
+    const newUser = new LoginData({
+      name: trimmedName,
+      mailid: trimmedEmail,
+      passcode: trimmedPasscode,
+    });
+
+    const savedUser = await newUser.save();
+
+    console.log("New user registered successfully:", savedUser._id, savedUser.mailid);
+
+    return res.status(201).json({
+      message: "Account created successfully!",
+      user: {
+        id: savedUser._id,
+        mailid: savedUser.mailid,
+        name: savedUser.name || "",
+      },
+    });
+
+  } catch (error) {
+    console.error("Signup error:", error);
+
+    // Duplicate key error in MongoDB
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "An account with this email already exists. Please log in instead.",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Server error during account creation",
+      error: error.message,
+    });
+  }
+};
+
+app.post("/api/signup", handleSignup);
+app.post("/api/register", handleSignup);
+
 // ========================================== LOGIN API ==========================================
 
 app.post("/api/login", async (req, res) => {
@@ -419,9 +516,14 @@ app.post("/api/login", async (req, res) => {
       });
     }
 
-    // Find email
+    const trimmedEmail = mailid.trim().toLowerCase();
+
+    // Find email (case-insensitive lookup)
     const user = await LoginData.findOne({
-      mailid: mailid,
+      $or: [
+        { mailid: trimmedEmail },
+        { mailid: { $regex: new RegExp(`^${mailid.trim()}$`, "i") } },
+      ],
     });
 
     if (!user) {
@@ -431,7 +533,7 @@ app.post("/api/login", async (req, res) => {
     }
 
     // Check passcode
-    if (user.passcode !== passcode) {
+    if (user.passcode !== String(passcode)) {
       return res.status(401).json({
         message: "Invalid email or passcode",
       });
@@ -443,6 +545,7 @@ app.post("/api/login", async (req, res) => {
       user: {
         id: user._id,
         mailid: user.mailid,
+        name: user.name || "",
       },
     });
 
@@ -470,7 +573,12 @@ app.get("/api/user/:identifier", async (req, res) => {
       user = await LoginData.findById(identifier);
     }
     if (!user) {
-      user = await LoginData.findOne({ mailid: identifier });
+      user = await LoginData.findOne({
+        $or: [
+          { mailid: identifier.trim().toLowerCase() },
+          { mailid: { $regex: new RegExp(`^${identifier.trim()}$`, "i") } },
+        ],
+      });
     }
 
     if (!user) {
@@ -481,13 +589,14 @@ app.get("/api/user/:identifier", async (req, res) => {
 
     // Find campaign associated with this user's mailid from "campaigns" collection
     const campaign = await Campaign.findOne({
-      mailid: user.mailid,
+      mailid: { $regex: new RegExp(`^${user.mailid.trim()}$`, "i") },
     });
 
     res.status(200).json({
       user: {
         id: user._id,
         mailid: user.mailid,
+        name: user.name || "",
       },
       campaign: campaign || null,
     });

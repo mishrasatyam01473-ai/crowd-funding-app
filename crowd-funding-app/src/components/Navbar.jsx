@@ -156,8 +156,16 @@ function Navbar() {
               <button
                 className="btn-user"
                 onClick={() => navigate('/user-login')}
+                title="Log in to your account"
               >
-                User Login
+                Sign In
+              </button>
+              <button
+                className="btn-signup"
+                onClick={() => navigate('/signup')}
+                title="Create a new account"
+              >
+                Sign Up
               </button>
             </div>
           )}

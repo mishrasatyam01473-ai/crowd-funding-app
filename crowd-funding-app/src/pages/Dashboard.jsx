@@ -156,7 +156,7 @@ const Dashboard = () => {
                     <h1>My Dashboard</h1>
 
                     <p>
-                        Welcome back, {campaign?.creator || user?.mailid || "User"}
+                        Welcome back, {user?.name || campaign?.creator || user?.mailid || "User"}
                     </p>
                 </div>
 
@@ -180,6 +180,17 @@ const Dashboard = () => {
 
                 <div className="user-card">
 
+                    {user?.name && (
+                        <div className="user-info">
+                            <span className="info-label">
+                                Name
+                            </span>
+                            <span className="info-value">
+                                {user.name}
+                            </span>
+                        </div>
+                    )}
+
                     <div className="user-info">
 
                         <span className="info-label">
@@ -196,11 +207,11 @@ const Dashboard = () => {
                     <div className="user-info">
 
                         <span className="info-label">
-                            Creator
+                            Account Type
                         </span>
 
                         <span className="info-value">
-                            {campaign?.creator}
+                            {campaign?.creator ? `Campaign Creator (${campaign.creator})` : "Active Member"}
                         </span>
 
                     </div>
