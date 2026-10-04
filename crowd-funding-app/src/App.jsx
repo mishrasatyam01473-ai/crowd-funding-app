@@ -10,6 +10,9 @@ import Dashboard from './pages/Dashboard.jsx';
 import DonationForm from './pages/DonationForm.jsx';
 import DonationHistory from './pages/DonationHistory.jsx';
 import { getAuthUser } from './utils/auth.js';
+import { initTheme } from './utils/theme.js';
+import './App.css';
+import './theme.css';
 
 export const getStoredUser = getAuthUser;
 
@@ -29,6 +32,7 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getStoredUser()));
 
   useEffect(() => {
+    initTheme();
     const handleAuthSync = () => setIsAuthenticated(Boolean(getStoredUser()));
 
     window.addEventListener('authChange', handleAuthSync);
@@ -40,10 +44,13 @@ function AppContent() {
   }, []);
 
   const isAuthRoute = ['/user-login', '/login', '/signup', '/register'].includes(location.pathname);
+  const showVerticalNav = isAuthenticated && !isAuthRoute;
 
   return (
-    <div className="mainPage">
+    <div className={`mainPage ${showVerticalNav ? 'has-vertical-nav' : 'is-logged-out'}`}>
       <Navbar />
+
+      <div className="main-content-layout">
 
       <Routes>
         {/* Auth routes */}
@@ -123,6 +130,7 @@ function AppContent() {
       </Routes>
 
       {isAuthenticated && !isAuthRoute && <Footer />}
+      </div>
     </div>
   );
 }

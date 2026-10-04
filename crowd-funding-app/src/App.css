@@ -1,0 +1,38 @@
+/* Application Main Layout */
+.mainPage {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* When vertical navbar is active (authenticated user) */
+.mainPage.has-vertical-nav {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.mainPage.has-vertical-nav .main-content-layout {
+  flex: 1 1 auto;
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* When logged out (Login / Signup) */
+.mainPage.is-logged-out .main-content-layout {
+  width: 100%;
+  min-height: calc(100vh - 68px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile Breakpoint (<960px) */
+@media (max-width: 960px) {
+  .mainPage.has-vertical-nav .main-content-layout {
+    margin-left: 0;
+    width: 100%;
+  }
+}

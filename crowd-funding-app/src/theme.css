@@ -1,0 +1,531 @@
+/* ==========================================================================
+   GLOBAL LIGHT THEME OVERRIDES
+   When data-theme="dark" (or unset), existing styles remain 100% untouched.
+   When data-theme="light", this file elevates all views into a pristine,
+   high-contrast, modern light interface.
+   ========================================================================== */
+
+/* Global Page & Typography */
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="light"] body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(2, 132, 199, 0.22);
+  color: #0369a1;
+}
+
+/* ==========================================================================
+   INDEX & HOME PAGE (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .index-container {
+  background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.08), transparent 45%), #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .hero-section {
+  background:
+    linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%),
+    radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.1), transparent 50%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .hero-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .hero-subtitle {
+  color: #475569;
+}
+
+[data-theme="light"] .btn-secondary {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+[data-theme="light"] .section-header h2 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .campaign-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .campaign-card:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .campaign-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .campaign-description {
+  color: #475569;
+}
+
+[data-theme="light"] .campaign-creator {
+  color: #64748b;
+}
+
+[data-theme="light"] .stat-value {
+  color: #0f172a;
+}
+
+[data-theme="light"] .stat-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .progress-bar-bg {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .loading-state,
+[data-theme="light"] .error-state {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+/* About Section on Index */
+[data-theme="light"] .about-section {
+  background:
+    radial-gradient(circle at 50% 100%, rgba(2, 132, 199, 0.06), transparent 45%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+  border-top: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .about-badge {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.35);
+  color: #0284c7;
+}
+
+[data-theme="light"] .about-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .about-subtitle {
+  color: #475569;
+}
+
+[data-theme="light"] .about-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .about-card:hover {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .about-card h3 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .about-card p {
+  color: #475569;
+}
+
+[data-theme="light"] .about-stats-strip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .about-stat-num {
+  color: #0284c7;
+}
+
+[data-theme="light"] .about-stat-label {
+  color: #64748b;
+}
+
+/* ==========================================================================
+   DASHBOARD PAGE (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .dashboard-page {
+  background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.08), transparent 35%), #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .dashboard-header {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .dashboard-header h1 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .dashboard-header p {
+  color: #475569;
+}
+
+[data-theme="light"] .logout-button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+[data-theme="light"] .logout-button:hover {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .user-section h2,
+[data-theme="light"] .campaign-section h2 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .user-card,
+[data-theme="light"] .campaign-item-card,
+[data-theme="light"] .stat-summary-card,
+[data-theme="light"] .detail-card,
+[data-theme="light"] .empty-state {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+[data-theme="light"] .user-card h3,
+[data-theme="light"] .campaign-item-card h3 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .detail-item,
+[data-theme="light"] .stat-item {
+  color: #334155;
+}
+
+[data-theme="light"] .detail-label,
+[data-theme="light"] .stat-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .campaign-table th {
+  background: #f1f5f9;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .campaign-table td {
+  color: #1e293b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .campaign-table tr:hover td {
+  background: #f8fafc;
+}
+
+/* ==========================================================================
+   DONATION HISTORY PAGE (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .history-page {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .history-bg-glow {
+  opacity: 0.04;
+}
+
+[data-theme="light"] .history-back-btn {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+[data-theme="light"] .history-back-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+[data-theme="light"] .history-title-card,
+[data-theme="light"] .stat-box,
+[data-theme="light"] .history-table-container,
+[data-theme="light"] .empty-history-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+[data-theme="light"] .history-header-text h1 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .history-header-text p {
+  color: #475569;
+}
+
+[data-theme="light"] .history-search-input,
+[data-theme="light"] .history-filter-select {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .history-search-input::placeholder {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .history-table th {
+  background: #f1f5f9;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .history-table td {
+  color: #1e293b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .history-table tr:hover td {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .stat-box-value {
+  color: #0f172a;
+}
+
+[data-theme="light"] .stat-box-label {
+  color: #64748b;
+}
+
+/* ==========================================================================
+   CREATE PROGRAMME & QUERY FORM & DONATION FORM (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .create-campaign-page {
+  background: radial-gradient(circle at top, rgba(2, 132, 199, 0.08), transparent 40%), #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .create-campaign-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+}
+
+[data-theme="light"] .create-campaign-card h1 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .subtitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .form-group label {
+  color: #1e293b;
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+[data-theme="light"] .query-page {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .query-card,
+[data-theme="light"] .query-container .faq-card,
+[data-theme="light"] .query-form-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+[data-theme="light"] .query-card h1,
+[data-theme="light"] .query-card h2,
+[data-theme="light"] .query-card h3 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .query-card p {
+  color: #475569;
+}
+
+[data-theme="light"] .query-card input,
+[data-theme="light"] .query-card textarea,
+[data-theme="light"] .query-card select {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .donation-page {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .donation-card,
+[data-theme="light"] .donation-form-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+}
+
+[data-theme="light"] .donation-card h1,
+[data-theme="light"] .donation-card h2,
+[data-theme="light"] .donation-card h3 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .donation-card p {
+  color: #475569;
+}
+
+[data-theme="light"] .amount-preset-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+[data-theme="light"] .amount-preset-btn:hover {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .amount-preset-btn.active {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+[data-theme="light"] .donation-input {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   LOGIN & SIGNUP PAGES (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .login-page {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.12), transparent 45%),
+    #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .login-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+  color: #0f172a;
+}
+
+[data-theme="light"] .login-card:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .brand-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .brand-subtitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .auth-tab-switch {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .auth-tab-btn {
+  color: #64748b;
+}
+
+[data-theme="light"] .auth-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .input-wrapper input {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .input-wrapper input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+[data-theme="light"] .input-icon {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .auth-label {
+  color: #334155;
+}
+
+[data-theme="light"] .auth-toggle-link {
+  color: #64748b;
+}
+
+[data-theme="light"] .auth-toggle-link button {
+  color: #0284c7;
+}
+
+/* ==========================================================================
+   FOOTER (Light Mode)
+   ========================================================================== */
+[data-theme="light"] .footer {
+  background: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .footer-brand {
+  color: #0f172a;
+}
+
+[data-theme="light"] .footer-column h4 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .footer-links a {
+  color: #64748b;
+}
+
+[data-theme="light"] .footer-links a:hover {
+  color: #0284c7;
+}
+
+[data-theme="light"] .footer-bottom {
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+[data-theme="light"] .footer-admin-link {
+  color: #94a3b8;
+}
