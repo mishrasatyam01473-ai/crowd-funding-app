@@ -22,7 +22,7 @@ const Dashboard = () => {
                 const storedUser = localStorage.getItem("user");
 
                 if (!storedUser) {
-                    navigate("/login");
+                    navigate("/user-login");
                     return;
                 }
 
@@ -32,8 +32,9 @@ const Dashboard = () => {
                 // FETCH USER + CAMPAIGN
                 // ==========================================
 
+                const identifier = parsedUser.id || parsedUser.mailid;
                 const response = await fetch(
-                    `${API_BASE_URL}/api/user/${parsedUser.id}`
+                    `${API_BASE_URL}/api/user/${identifier}`
                 );
 
                 const data = await response.json();
@@ -50,7 +51,7 @@ const Dashboard = () => {
                 // SET DATA
                 // ==========================================
 
-                setUser(data.user);
+                setUser(data.user || parsedUser);
                 setCampaign(data.campaign);
 
             } catch (error) {
@@ -71,8 +72,8 @@ const Dashboard = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("user");
-
-        navigate("/login");
+        window.dispatchEvent(new Event("authChange"));
+        navigate("/user-login");
     };
 
     // ==========================================
@@ -98,7 +99,11 @@ const Dashboard = () => {
 
                 <p>{error}</p>
 
-                <button onClick={() => navigate("/login")}>
+                <button onClick={() => {
+                    localStorage.removeItem("user");
+                    window.dispatchEvent(new Event("authChange"));
+                    navigate("/user-login");
+                }}>
                     Go to Login
                 </button>
             </div>
@@ -122,7 +127,7 @@ const Dashboard = () => {
                     <h1>My Dashboard</h1>
 
                     <p>
-                        Welcome back, {campaign?.creator}
+                        Welcome back, {campaign?.creator || user?.mailid || "User"}
                     </p>
                 </div>
 
@@ -184,7 +189,7 @@ const Dashboard = () => {
 
                 <h2>My Campaign</h2>
 
-                {campaign && (
+                {campaign ? (
 
                     <div className="campaign-card">
 
@@ -270,6 +275,27 @@ const Dashboard = () => {
 
                     </div>
 
+                ) : (
+                    <div style={{ padding: "36px 20px", textAlign: "center", background: "rgba(255,255,255,0.04)", borderRadius: "12px", border: "1px dashed rgba(255,255,255,0.2)" }}>
+                        <p style={{ color: "rgba(255,255,255,0.75)", marginBottom: "16px", fontSize: "1.05rem" }}>
+                            You have not registered any campaign yet.
+                        </p>
+                        <button
+                            onClick={() => navigate("/create-programme")}
+                            style={{
+                                padding: "10px 22px",
+                                background: "#ff4757",
+                                color: "#ffffff",
+                                border: "none",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                fontSize: "0.95rem"
+                            }}
+                        >
+                            Create a Programme
+                        </button>
+                    </div>
                 )}
 
             </div>

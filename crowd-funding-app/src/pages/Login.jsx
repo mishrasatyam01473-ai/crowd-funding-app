@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import "./Login.css";
+
 const Login = () => {
     const navigate = useNavigate();
 
@@ -10,6 +11,15 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
+
+    // If user is already logged in, redirect to dashboard
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            navigate("/dashboard");
+        }
+    }, [navigate]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -26,13 +36,20 @@ const Login = () => {
             console.log("Login response:", data);
             if (!response.ok) {
                 throw new Error(data.message || "Login failed");
-            } // Login successful 
-            setMessage("Login successful!");
-            console.log("Logged in user:", data.user); // Save login information 
-            localStorage.setItem("user", JSON.stringify(data.user)); // Redirect after successful login 
+            }
+
+            // Login successful 
+            setMessage("Login successful! Redirecting to dashboard...");
+            console.log("Logged in user:", data.user);
+
+            // Save login information and notify app
+            localStorage.setItem("user", JSON.stringify(data.user));
+            window.dispatchEvent(new Event("authChange"));
+
+            // Redirect immediately to dashboard
             setTimeout(() => {
                 navigate("/dashboard");
-            }, 1000);
+            }, 600);
         } catch (error) {
             console.error("Login error:", error);
             setError(error.message);

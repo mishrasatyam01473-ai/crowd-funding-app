@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import IndexPage from './components/IndexPage.jsx'
@@ -20,8 +20,9 @@ function App() {
           <Route path="/create-programme" element={<CreateProgramme />} />
           <Route path="/query-form" element={<QueryForm />} />
           <Route path="/user-login" element={<Login />} />
+          <Route path="/login" element={<Navigate to="/user-login" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/donate" element={<DonationForm/>} />
+          <Route path="/donate" element={<DonationForm />} />
         </Routes>
 
         <Footer />

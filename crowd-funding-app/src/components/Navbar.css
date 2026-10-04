@@ -288,6 +288,56 @@
 
 
 /* =========================================================
+   USER ACTION GROUP & LOGOUT BUTTON
+   ========================================================= */
+
+.user-action-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-logout {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 71, 87, 0.85);
+  border-radius: 9px;
+  background: #ff4757;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: 0 4px 14px rgba(255, 71, 87, 0.28);
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover,
+.btn-logout:focus-visible {
+  border-color: #ff6b81;
+  background: #ee3546;
+  box-shadow: 0 6px 18px rgba(255, 71, 87, 0.42);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+}
+
+.nav-link.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* =========================================================
    TABLET
    ========================================================= */
 
@@ -383,7 +433,8 @@
   }
 
 
-  .btn-user {
+  .btn-user,
+  .btn-logout {
     min-height: 38px;
 
     padding: 7px 10px;
@@ -425,7 +476,8 @@
   }
 
 
-  .btn-user {
+  .btn-user,
+  .btn-logout {
     padding-inline: 8px;
 
     font-size: 0.72rem;

@@ -452,21 +452,46 @@ app.post("/api/login", async (req, res) => {
 });
 
 
-// ========================================== // GET USER DASHBOARD // ========================================== 
-app.get("/api/user/:mailid", async (req, res) => {
+// ==========================================
+// GET USER DASHBOARD
+// ==========================================
+app.get("/api/user/:identifier", async (req, res) => {
   try {
-    const userId = req.params.mailid; // Find login data 
-    const user = await LoginData.findOne({ mailid: userId });
+    const identifier = req.params.identifier;
+
+    // Find user by MongoDB _id (if valid ObjectId) or by email
+    let user = null;
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      user = await LoginData.findById(identifier);
+    }
     if (!user) {
-      return res.status(404).json({ message: "User not found", });
-    } // Find campaign 
-    const campaign = await CampaignRegistration.findById(user.campaignId);
-    if (!campaign) {
-      return res.status(404).json({ message: "Campaign not found", });
-    } res.status(200).json({ user: { id: user._id, mailid: user.mailid, }, campaign: campaign, });
+      user = await LoginData.findOne({ mailid: identifier });
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Find campaign associated with this user's mailid
+    const campaign = await CampaignRegistration.findOne({
+      mailid: user.mailid,
+    });
+
+    res.status(200).json({
+      user: {
+        id: user._id,
+        mailid: user.mailid,
+      },
+      campaign: campaign || null,
+    });
   } catch (error) {
     console.error("Dashboard error:", error);
-    res.status(500).json({ message: "Failed to fetch user information", error: error.message, });
+    res.status(500).json({
+      message: "Failed to fetch user information",
+      error: error.message,
+    });
   }
 });
 
