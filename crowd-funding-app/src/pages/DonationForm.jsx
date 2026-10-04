@@ -18,8 +18,22 @@ const DonationForm = () => {
   const campaignId = campaign.campaignId || campaign._id || "";
 
   const [donorName, setDonorName] = useState("");
+  const [donorEmail, setDonorEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill user information if logged in
+  React.useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const u = JSON.parse(stored);
+        if (u.mailid) setDonorEmail(u.mailid);
+      } catch (err) {
+        console.error("Session parse error:", err);
+      }
+    }
+  }, []);
 
   // =====================================================
   // QUICK PRESET SELECTION
@@ -63,6 +77,7 @@ const DonationForm = () => {
             campaignName,
             description,
             donorName: donorName.trim(),
+            donorEmail: donorEmail.trim(),
             amount: Number(amount),
           }),
         }
@@ -118,6 +133,7 @@ const DonationForm = () => {
                   campaignName,
                   description,
                   donorName: donorName.trim(),
+                  donorEmail: donorEmail.trim(),
                   amount: Number(amount),
                   razorpayOrderId: paymentResponse.razorpay_order_id,
                   razorpayPaymentId: paymentResponse.razorpay_payment_id,
@@ -141,8 +157,8 @@ const DonationForm = () => {
             setDonorName("");
             setAmount("");
 
-            // Go back to previous page
-            navigate(-1);
+            // Navigate to Donation History page so the user sees their receipt
+            navigate("/donation-history");
           } catch (error) {
             console.error("Verification error:", error);
             alert(
@@ -505,6 +521,42 @@ const DonationForm = () => {
                 </div>
                 <p className="input-helper-text">
                   This will appear in the campaign supporter list and receipt.
+                </p>
+              </div>
+
+              {/* Donor Email */}
+              <div className="form-group">
+                <label htmlFor="donor-email" className="input-group-label">
+                  Your Email (for Receipt & History)
+                </label>
+
+                <div className="input-icon-wrapper">
+                  <span className="input-icon" aria-hidden="true">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                  </span>
+                  <input
+                    id="donor-email"
+                    type="email"
+                    value={donorEmail}
+                    onChange={(e) => setDonorEmail(e.target.value)}
+                    placeholder="e.g. yourname@example.com"
+                    className="donation-input with-icon"
+                  />
+                </div>
+                <p className="input-helper-text">
+                  Used to link this contribution to your Donation History.
                 </p>
               </div>
 

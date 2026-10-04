@@ -331,6 +331,40 @@
   transform: translateY(0);
 }
 
+/* History / My Donations Button */
+.btn-history {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 9px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #38bdf8;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: all 0.2s ease;
+}
+
+.btn-history:hover,
+.btn-history:focus-visible {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.2);
+  color: #ffffff;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.btn-history:active {
+  transform: translateY(0);
+}
+
 .nav-link.active {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
@@ -434,7 +468,8 @@
 
 
   .btn-user,
-  .btn-logout {
+  .btn-logout,
+  .btn-history {
     min-height: 38px;
 
     padding: 7px 10px;
@@ -477,7 +512,8 @@
 
 
   .btn-user,
-  .btn-logout {
+  .btn-logout,
+  .btn-history {
     padding-inline: 8px;
 
     font-size: 0.72rem;

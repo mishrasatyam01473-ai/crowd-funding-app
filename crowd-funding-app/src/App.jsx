@@ -7,6 +7,7 @@ import QueryForm from './pages/QueryForm.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import DonationForm from './pages/DonationForm.jsx'
+import DonationHistory from './pages/DonationHistory.jsx'
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
           <Route path="/login" element={<Navigate to="/user-login" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/donate" element={<DonationForm />} />
+          <Route path="/donation-history" element={<DonationHistory />} />
+          <Route path="/my-donations" element={<Navigate to="/donation-history" replace />} />
         </Routes>
 
         <Footer />

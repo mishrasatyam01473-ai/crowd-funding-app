@@ -113,13 +113,34 @@ function Navbar() {
             </li>
           )}
 
+          {/* Donation History Nav Link */}
+          <li className="nav-item">
+            <button
+              className={`nav-link ${location.pathname === '/donation-history' ? 'active' : ''}`}
+              onClick={() => navigate('/donation-history')}
+            >
+              Donation History
+            </button>
+          </li>
+
         </ul>
 
 
-        {/* User Login / Logout Actions */}
+        {/* User Actions */}
         <div className="navbar-actions">
           {user ? (
             <div className="user-action-group">
+              <button
+                className="btn-history"
+                onClick={() => navigate('/donation-history')}
+                title="View your donation history"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ marginRight: '5px' }}>
+                  <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                My Donations
+              </button>
+
               <button
                 className="btn-logout"
                 onClick={handleLogout}
@@ -129,12 +150,22 @@ function Navbar() {
               </button>
             </div>
           ) : (
-            <button
-              className="btn-user"
-              onClick={() => navigate('/user-login')}
-            >
-              User Login
-            </button>
+            <div className="user-action-group">
+              <button
+                className="btn-history"
+                onClick={() => navigate('/donation-history')}
+                title="View donation history"
+              >
+                Donations
+              </button>
+
+              <button
+                className="btn-user"
+                onClick={() => navigate('/user-login')}
+              >
+                User Login
+              </button>
+            </div>
           )}
         </div>
 

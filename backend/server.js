@@ -242,6 +242,78 @@ const LoginData = mongoose.model(
 );
 
 // ==========================================
+// DONATION SCHEMA & MODEL
+// ==========================================
+
+const DonationSchema = new mongoose.Schema(
+  {
+    donationId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    campaignId: {
+      type: String,
+      default: "",
+    },
+    creatorName: {
+      type: String,
+      default: "",
+    },
+    campaignName: {
+      type: String,
+      default: "",
+    },
+    description: {
+      type: String,
+      default: "",
+    },
+    donorName: {
+      type: String,
+      required: true,
+    },
+    donorEmail: {
+      type: String,
+      default: "",
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    currency: {
+      type: String,
+      default: "INR",
+    },
+    paymentMethod: {
+      type: String,
+      default: "Razorpay (Online)",
+    },
+    razorpayOrderId: {
+      type: String,
+      default: "",
+    },
+    razorpayPaymentId: {
+      type: String,
+      default: "",
+    },
+    paymentStatus: {
+      type: String,
+      default: "SUCCESS",
+    },
+    donationDate: {
+      type: String,
+      default: "",
+    },
+  },
+  {
+    timestamps: true,
+    collection: "donations",
+  }
+);
+
+const Donation = mongoose.model("Donation", DonationSchema);
+
+// ==========================================
 // GET CAMPAIGNS
 // ==========================================
 
@@ -803,6 +875,7 @@ app.post(
         campaignName,
         description,
         donorName,
+        donorEmail,
         amount,
       } = req.body;
 
@@ -951,6 +1024,7 @@ app.post(
         campaignName,
         description,
         donorName,
+        donorEmail,
         amount,
 
         razorpayOrderId,
@@ -1017,159 +1091,132 @@ app.post(
       );
 
       // =================================================
-      // MAKE SURE EXCEL FILE EXISTS
+      // DETERMINE PAYMENT METHOD FROM RAZORPAY
       // =================================================
 
-      createDonationExcelFile();
-
-      // =================================================
-      // READ EXCEL
-      // =================================================
-
-      const workbook =
-        XLSX.readFile(
-          donationExcelFile
-        );
-
-      let worksheet =
-        workbook.Sheets[
-          "Donations"
-        ];
-
-      // =================================================
-      // CREATE SHEET IF MISSING
-      // =================================================
-
-      if (!worksheet) {
-        worksheet =
-          XLSX.utils.aoa_to_sheet([
-            donationHeaders,
-          ]);
-
-        XLSX.utils.book_append_sheet(
-          workbook,
-          worksheet,
-          "Donations"
-        );
+      let paymentMethod = "Razorpay (Online)";
+      try {
+        const paymentDetails = await razorpay.payments.fetch(razorpayPaymentId);
+        if (paymentDetails && paymentDetails.method) {
+          const methodType = String(paymentDetails.method).toUpperCase();
+          if (methodType === "UPI") {
+            paymentMethod = paymentDetails.vpa ? `UPI (${paymentDetails.vpa})` : "UPI";
+          } else if (methodType === "CARD") {
+            const cardNetwork = paymentDetails.card?.network || "Card";
+            const last4 = paymentDetails.card?.last4 ? ` ****${paymentDetails.card.last4}` : "";
+            paymentMethod = `${cardNetwork}${last4}`;
+          } else if (methodType === "NETBANKING") {
+            paymentMethod = paymentDetails.bank ? `Net Banking (${paymentDetails.bank})` : "Net Banking";
+          } else if (methodType === "WALLET") {
+            paymentMethod = paymentDetails.wallet ? `Wallet (${paymentDetails.wallet})` : "Wallet";
+          } else {
+            paymentMethod = methodType;
+          }
+        }
+      } catch (methodErr) {
+        console.warn("Notice: Default payment method used:", methodErr.message);
       }
 
       // =================================================
-      // READ EXISTING ROWS
+      // GENERATE DONATION ID & FORMATTED DATE
       // =================================================
 
-      const existingData =
-        XLSX.utils.sheet_to_json(
-          worksheet,
-          {
-            header: 1,
-            defval: "",
-          }
-        );
+      const donationId = `DON-${Date.now()}`;
+      const donationDate = new Date().toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
 
       // =================================================
-      // CHECK DUPLICATE PAYMENT
+      // SAVE TO MONGODB
       // =================================================
 
-      const duplicatePayment =
-        existingData.some(
-          (row, index) => {
-            if (index === 0) {
-              return false;
-            }
-
-            return (
-              row[9] ===
-              razorpayPaymentId
-            );
-          }
-        );
-
-      if (duplicatePayment) {
-        return res.status(200).json({
-          success: true,
-
-          message:
-            "Payment has already been recorded.",
+      let savedDonationDoc = null;
+      try {
+        const newDonation = new Donation({
+          donationId,
+          campaignId: campaignId || "",
+          creatorName: creatorName || "",
+          campaignName: campaignName || "",
+          description: description || "",
+          donorName: donorName ? donorName.trim() : "Anonymous",
+          donorEmail: donorEmail ? donorEmail.trim() : "",
+          amount: Number(amount),
+          currency: "INR",
+          paymentMethod,
+          razorpayOrderId,
+          razorpayPaymentId,
+          paymentStatus: "SUCCESS",
+          donationDate,
         });
+
+        savedDonationDoc = await newDonation.save();
+        console.log("Donation saved to MongoDB:", donationId);
+      } catch (mongoErr) {
+        console.error("MongoDB donation save warning:", mongoErr.message);
+      }
+
+      // Update campaign raised total if valid campaignId
+      if (campaignId && mongoose.Types.ObjectId.isValid(campaignId)) {
+        await CampaignRegistration.findByIdAndUpdate(campaignId, {
+          $inc: { raised: Number(amount) },
+        }).catch((err) => console.warn("Notice updating campaign raised:", err.message));
       }
 
       // =================================================
-      // GENERATE DONATION ID
+      // SAVE TO EXCEL AS BACKUP RECORD
       // =================================================
 
-      const donationId =
-        `DON-${Date.now()}`;
+      try {
+        createDonationExcelFile();
 
-      // =================================================
-      // ADD DONATION
-      // =================================================
+        const workbook = XLSX.readFile(donationExcelFile);
+        let worksheet = workbook.Sheets["Donations"] || workbook.Sheets[workbook.SheetNames[0]];
 
-      existingData.push([
-        donationId,
+        if (!worksheet) {
+          worksheet = XLSX.utils.aoa_to_sheet([donationHeaders]);
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Donations");
+        }
 
-        campaignId || "",
+        const existingData = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          defval: "",
+        });
 
-        creatorName || "",
+        if (existingData.length === 0) {
+          existingData.push(donationHeaders);
+        }
 
-        campaignName || "",
+        existingData.push([
+          donationId,
+          campaignId || "",
+          creatorName || "",
+          campaignName || "",
+          description || "",
+          donorName || "",
+          Number(amount),
+          "INR",
+          razorpayOrderId,
+          razorpayPaymentId,
+          "SUCCESS",
+          donationDate,
+          paymentMethod,
+          donorEmail || "",
+        ]);
 
-        description || "",
-
-        donorName || "",
-
-        Number(amount),
-
-        "INR",
-
-        razorpayOrderId,
-
-        razorpayPaymentId,
-
-        "SUCCESS",
-
-        new Date().toLocaleString(
-          "en-IN"
-        ),
-      ]);
-
-      // =================================================
-      // CREATE NEW SHEET
-      // =================================================
-
-      const newWorksheet =
-        XLSX.utils.aoa_to_sheet(
-          existingData
-        );
-
-      workbook.Sheets[
-        "Donations"
-      ] = newWorksheet;
-
-      // =================================================
-      // SAVE EXCEL
-      // =================================================
-
-      XLSX.writeFile(
-        workbook,
-        donationExcelFile
-      );
-
-      console.log(
-        "Donation saved:",
-        donationId
-      );
-
-      // =================================================
-      // RESPONSE
-      // =================================================
+        const newWorksheet = XLSX.utils.aoa_to_sheet(existingData);
+        workbook.Sheets["Donations"] = newWorksheet;
+        XLSX.writeFile(workbook, donationExcelFile);
+        console.log("Donation appended to DonationData.xlsx:", donationId);
+      } catch (excelErr) {
+        console.warn("Excel record write notice:", excelErr.message);
+      }
 
       return res.status(200).json({
         success: true,
-
-        message:
-          "Donation successfully recorded.",
-
+        message: "Donation successfully recorded.",
         donationId,
+        donation: savedDonationDoc,
       });
     } catch (error) {
       console.error(
@@ -1179,13 +1226,97 @@ app.post(
 
       return res.status(500).json({
         success: false,
-
         message:
           "Payment verified but donation could not be saved.",
+        error: error.message,
       });
     }
   }
 );
+
+// =====================================================
+// GET DONATIONS (DONATION HISTORY)
+// =====================================================
+
+app.get("/api/donations", async (req, res) => {
+  try {
+    const { email, donorName } = req.query;
+    let query = {};
+
+    if (email && email.trim()) {
+      query.$or = [
+        { donorEmail: new RegExp(`^${email.trim()}$`, "i") },
+        { donorName: new RegExp(`^${email.trim()}$`, "i") },
+      ];
+    } else if (donorName && donorName.trim()) {
+      query.donorName = new RegExp(donorName.trim(), "i");
+    }
+
+    let donations = await Donation.find(query).sort({ createdAt: -1 });
+
+    // Fallback: If MongoDB has no records, check Excel file
+    if (donations.length === 0 && fs.existsSync(donationExcelFile)) {
+      try {
+        const workbook = XLSX.readFile(donationExcelFile);
+        const worksheet =
+          workbook.Sheets["Donations"] ||
+          workbook.Sheets[workbook.SheetNames[0]];
+
+        if (worksheet) {
+          const rows = XLSX.utils.sheet_to_json(worksheet);
+          const normalized = rows.map((r, idx) => ({
+            donationId: r["Donation ID"] || `DON-${idx}`,
+            campaignId: r["Campaign ID"] || "",
+            creatorName: r["Creator Name"] || "",
+            campaignName: r["Campaign Name"] || "",
+            description: r["Campaign Description"] || "",
+            donorName: r["Donor Name"] || "Anonymous",
+            donorEmail: r["Donor Email"] || "",
+            amount: Number(r["Amount"] || 0),
+            currency: r["Currency"] || "INR",
+            paymentMethod: r["Payment Method"] || "Razorpay (Online)",
+            razorpayOrderId: r["Razorpay Order ID"] || "",
+            razorpayPaymentId: r["Razorpay Payment ID"] || "",
+            paymentStatus: r["Payment Status"] || "SUCCESS",
+            donationDate: r["Donation Date"] || "",
+          }));
+
+          if (email && email.trim()) {
+            const em = email.trim().toLowerCase();
+            donations = normalized.filter(
+              (d) =>
+                (d.donorEmail && d.donorEmail.toLowerCase() === em) ||
+                (d.donorName && d.donorName.toLowerCase() === em)
+            );
+          } else {
+            donations = normalized;
+          }
+        }
+      } catch (excelErr) {
+        console.warn("Excel read fallback notice:", excelErr.message);
+      }
+    }
+
+    const totalAmount = donations.reduce(
+      (sum, item) => sum + (Number(item.amount) || 0),
+      0
+    );
+
+    return res.status(200).json({
+      success: true,
+      donations,
+      count: donations.length,
+      totalAmount,
+    });
+  } catch (error) {
+    console.error("Fetch donations error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Could not fetch donation history.",
+      error: error.message,
+    });
+  }
+});
 
 
 
