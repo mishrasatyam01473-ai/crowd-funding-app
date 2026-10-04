@@ -56,8 +56,22 @@ function App() {
             }
           />
           <Route path="/donate" element={<DonationForm />} />
-          <Route path="/donation-history" element={<DonationHistory />} />
-          <Route path="/my-donations" element={<Navigate to="/donation-history" replace />} />
+          <Route
+            path="/donation-history"
+            element={
+              <ProtectedRoute>
+                <DonationHistory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-donations"
+            element={
+              <ProtectedRoute>
+                <DonationHistory />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
 
         <Footer />

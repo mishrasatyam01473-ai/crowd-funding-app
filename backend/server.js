@@ -1205,6 +1205,20 @@ app.get("/api/donations", async (req, res) => {
   try {
     const { email, donorName } = req.query;
 
+    // Security & Privacy requirement: User can access THEIR OWN donation history only
+    const queryEmail = (email || "").trim().toLowerCase();
+    const queryName = (donorName || "").trim().toLowerCase();
+
+    if (!queryEmail && !queryName) {
+      return res.status(400).json({
+        success: false,
+        message: "Email parameter is required. You can only view your own donation history.",
+        donations: [],
+        count: 0,
+        totalAmount: 0,
+      });
+    }
+
     if (!fs.existsSync(donationExcelFile)) {
       return res.status(200).json({
         success: true,
@@ -1250,31 +1264,26 @@ app.get("/api/donations", async (req, res) => {
       donationDate: r["Date and Time"] || r["Donation Date"] || r.donationDate || "",
     }));
 
-    let donations = normalized;
+    // Filter strictly for the requesting user's donations
+    let userDonations = normalized.filter((d) => {
+      const dEmail = (d.donorEmail || "").toLowerCase();
+      const dName = (d.donorName || "").toLowerCase();
 
-    // Filter by logged-in user email or donor name if provided
-    if (email && email.trim()) {
-      const q = email.trim().toLowerCase();
-      donations = normalized.filter((d) => {
-        const dEmail = (d.donorEmail || "").toLowerCase();
-        const dName = (d.donorName || "").toLowerCase();
-        return (
-          dEmail === q ||
-          dName === q ||
-          (q.includes("@") && dName === q.split("@")[0].toLowerCase())
-        );
-      });
-    } else if (donorName && donorName.trim()) {
-      const q = donorName.trim().toLowerCase();
-      donations = normalized.filter(
-        (d) => d.donorName && d.donorName.toLowerCase().includes(q)
-      );
-    }
+      if (queryEmail) {
+        if (dEmail === queryEmail) return true;
+        if (dName === queryEmail) return true;
+        if (queryEmail.includes("@") && dName === queryEmail.split("@")[0]) return true;
+      }
+      if (queryName && dName === queryName) {
+        return true;
+      }
+      return false;
+    });
 
     // Sort newest first
-    donations = donations.reverse();
+    userDonations = userDonations.reverse();
 
-    const totalAmount = donations.reduce(
+    const totalAmount = userDonations.reduce(
       (sum, item) => sum + (Number(item.amount) || 0),
       0
     );
@@ -1282,8 +1291,8 @@ app.get("/api/donations", async (req, res) => {
     return res.status(200).json({
       success: true,
       source: "DonationData.xlsx",
-      donations,
-      count: donations.length,
+      donations: userDonations,
+      count: userDonations.length,
       totalAmount,
     });
   } catch (error) {

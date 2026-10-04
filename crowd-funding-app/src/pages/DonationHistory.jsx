@@ -1,43 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import "./DonationHistory.css";
 
 const DonationHistory = () => {
   const navigate = useNavigate();
 
+  // Load user synchronously from localStorage on initial render
+  const [currentUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const u = JSON.parse(stored);
+        return u && (u.id || u.mailid) ? u : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
   const [donations, setDonations] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-  const [lookupEmail, setLookupEmail] = useState("");
 
-  // Load user from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const u = JSON.parse(stored);
-        setCurrentUser(u);
-        setLookupEmail(u.mailid || "");
-      } catch (err) {
-        console.error("Failed to parse user session", err);
-      }
-    }
-  }, []);
-
-  // Fetch donation history
+  // Fetch donation history for the authenticated user only
   const fetchDonations = async (emailToQuery) => {
+    const targetEmail = emailToQuery || currentUser?.mailid;
+    if (!targetEmail) {
+      navigate("/user-login", { replace: true });
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
 
-      const url = emailToQuery
-        ? `${API_BASE_URL}/api/donations?email=${encodeURIComponent(emailToQuery.trim())}`
-        : `${API_BASE_URL}/api/donations`;
-
+      const url = `${API_BASE_URL}/api/donations?email=${encodeURIComponent(targetEmail.trim())}`;
       const res = await fetch(url);
       const data = await res.json();
 
@@ -56,18 +57,12 @@ const DonationHistory = () => {
   };
 
   useEffect(() => {
-    if (currentUser?.mailid) {
+    if (!currentUser) {
+      navigate("/user-login", { replace: true, state: { from: "/donation-history" } });
+    } else if (currentUser.mailid) {
       fetchDonations(currentUser.mailid);
-    } else {
-      // If no user is logged in, fetch general donations or allow search
-      fetchDonations("");
     }
-  }, [currentUser]);
-
-  const handleManualSearch = (e) => {
-    e.preventDefault();
-    fetchDonations(lookupEmail);
-  };
+  }, [currentUser, navigate]);
 
   // Filter donations by search query (campaign name, creator, donation ID)
   const filteredDonations = donations.filter((d) => {
@@ -85,6 +80,11 @@ const DonationHistory = () => {
   const uniqueCampaignsCount = new Set(
     donations.map((d) => d.campaignName || d.campaignId).filter(Boolean)
   ).size;
+
+  // If not logged in, redirect immediately to login
+  if (!currentUser) {
+    return <Navigate to="/user-login" replace state={{ from: "/donation-history" }} />;
+  }
 
   return (
     <div className="history-page">
@@ -220,26 +220,10 @@ const DonationHistory = () => {
             )}
           </div>
 
-          {/* If user is not logged in, provide email lookup input */}
-          {!currentUser && (
-            <form onSubmit={handleManualSearch} className="email-lookup-form">
-              <input
-                type="email"
-                placeholder="Filter by donor email..."
-                value={lookupEmail}
-                onChange={(e) => setLookupEmail(e.target.value)}
-                className="lookup-input"
-              />
-              <button type="submit" className="lookup-btn">
-                Search
-              </button>
-            </form>
-          )}
-
           <button
             type="button"
             className="refresh-btn"
-            onClick={() => fetchDonations(currentUser?.mailid || lookupEmail)}
+            onClick={() => fetchDonations(currentUser?.mailid)}
             title="Refresh list"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

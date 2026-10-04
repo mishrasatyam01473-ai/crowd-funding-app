@@ -113,15 +113,17 @@ function Navbar() {
             </li>
           )}
 
-          {/* Donation History Nav Link */}
-          <li className="nav-item">
-            <button
-              className={`nav-link ${location.pathname === '/donation-history' ? 'active' : ''}`}
-              onClick={() => navigate('/donation-history')}
-            >
-              Donation History
-            </button>
-          </li>
+          {/* Donation History Nav Link (Visible only after login) */}
+          {user && (
+            <li className="nav-item">
+              <button
+                className={`nav-link ${location.pathname === '/donation-history' ? 'active' : ''}`}
+                onClick={() => navigate('/donation-history')}
+              >
+                My Donations
+              </button>
+            </li>
+          )}
 
         </ul>
 
@@ -151,14 +153,6 @@ function Navbar() {
             </div>
           ) : (
             <div className="user-action-group">
-              <button
-                className="btn-history"
-                onClick={() => navigate('/donation-history')}
-                title="View donation history"
-              >
-                Donations
-              </button>
-
               <button
                 className="btn-user"
                 onClick={() => navigate('/user-login')}
