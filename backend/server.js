@@ -161,6 +161,33 @@ const LoginDataSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+
+    loginHistory: [
+      {
+        loginAt: {
+          type: Date,
+          default: Date.now,
+        },
+        ip: {
+          type: String,
+          default: "",
+        },
+        userAgent: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -461,16 +488,34 @@ const handleSignup = async (req, res) => {
       });
     }
 
-    // Create and save new user
+    // Create and save new user in MongoDB LoginData collection
+    const clientIp = req.ip || req.headers["x-forwarded-for"] || "127.0.0.1";
+    const userAgent = req.headers["user-agent"] || "";
+
     const newUser = new LoginData({
       name: trimmedName,
       mailid: trimmedEmail,
       passcode: trimmedPasscode,
+      lastLogin: new Date(),
+      loginCount: 1,
+      loginHistory: [
+        {
+          loginAt: new Date(),
+          ip: clientIp,
+          userAgent: userAgent,
+        },
+      ],
     });
 
     const savedUser = await newUser.save();
 
-    console.log("New user registered successfully:", savedUser._id, savedUser.mailid);
+    console.log("New user registered successfully into MongoDB LoginData collection:");
+    console.log({
+      id: savedUser._id,
+      name: savedUser.name,
+      mailid: savedUser.mailid,
+      createdAt: savedUser.createdAt,
+    });
 
     return res.status(201).json({
       message: "Account created successfully!",
@@ -517,27 +562,74 @@ app.post("/api/login", async (req, res) => {
     }
 
     const trimmedEmail = mailid.trim().toLowerCase();
+    const trimmedPasscode = String(passcode).trim();
+    const clientIp = req.ip || req.headers["x-forwarded-for"] || "127.0.0.1";
+    const userAgent = req.headers["user-agent"] || "";
 
     // Find email (case-insensitive lookup)
-    const user = await LoginData.findOne({
+    let user = await LoginData.findOne({
       $or: [
         { mailid: trimmedEmail },
         { mailid: { $regex: new RegExp(`^${mailid.trim()}$`, "i") } },
       ],
     });
 
+    // If the user doesn't exist yet in LoginData, auto-register them seamlessly so their login/sign data is saved
     if (!user) {
+      if (trimmedPasscode.length < 4) {
+        return res.status(400).json({
+          message: "Passcode must be at least 4 characters long",
+        });
+      }
+
+      const newUser = new LoginData({
+        name: "",
+        mailid: trimmedEmail,
+        passcode: trimmedPasscode,
+        lastLogin: new Date(),
+        loginCount: 1,
+        loginHistory: [
+          {
+            loginAt: new Date(),
+            ip: clientIp,
+            userAgent: userAgent,
+          },
+        ],
+      });
+
+      const savedUser = await newUser.save();
+      console.log("New user auto-created via login in MongoDB LoginData:", savedUser._id, savedUser.mailid);
+
+      return res.status(200).json({
+        message: "Login successful! Account registered in LoginData.",
+        user: {
+          id: savedUser._id,
+          mailid: savedUser.mailid,
+          name: savedUser.name || "",
+        },
+      });
+    }
+
+    // Check passcode for existing user
+    if (user.passcode !== trimmedPasscode) {
       return res.status(401).json({
         message: "Invalid email or passcode",
       });
     }
 
-    // Check passcode
-    if (user.passcode !== String(passcode)) {
-      return res.status(401).json({
-        message: "Invalid email or passcode",
-      });
-    }
+    // Update login tracking data in LoginData collection
+    user.lastLogin = new Date();
+    user.loginCount = (user.loginCount || 0) + 1;
+    if (!user.loginHistory) user.loginHistory = [];
+    user.loginHistory.push({
+      loginAt: new Date(),
+      ip: clientIp,
+      userAgent: userAgent,
+    });
+
+    await user.save();
+
+    console.log("Login data updated in MongoDB LoginData for user:", user.mailid, "Count:", user.loginCount);
 
     // Login successful
     res.status(200).json({
@@ -555,6 +647,27 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({
       message: "Server error during login",
       error: error.message,
+    });
+  }
+});
+
+// ==========================================
+// GET LOGINDATA (View all accounts in LoginData collection)
+// ==========================================
+app.get("/api/logindata", async (req, res) => {
+  try {
+    const users = await LoginData.find({}, { passcode: 0 }).sort({ updatedAt: -1 });
+    res.status(200).json({
+      success: true,
+      collection: "LoginData",
+      total: users.length,
+      users,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve LoginData",
+      error: err.message,
     });
   }
 });
